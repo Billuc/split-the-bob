@@ -1,11 +1,16 @@
-use axum::{ routing::{get, post}, Router, http::StatusCode, Json };
-use db::{DB};
-use tower_http::services::ServeDir;
+use axum::{
+    Json, Router, extract,
+    http::StatusCode,
+    routing::{get, post},
+};
+use db::DB;
 use std::env;
+use tower_http::services::ServeDir;
 
-mod expense;
-mod expense_group;
 mod db;
+mod split;
+mod split_repo;
+mod expense_repo;
 
 #[derive(Clone)]
 struct State {
@@ -25,8 +30,21 @@ async fn main() {
         .fallback_service(static_files)
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}"))
+        .await
+        .unwrap();
     println!("Starting server on 0.0.0.0:{port}");
     axum::serve(listener, app).await.unwrap();
 }
 
+#[derive(serde::Deserialize)]
+struct SplitQuery {
+    split_name: String,
+    split_code: String,
+}
+
+async fn show_split(
+    extract::State(state): extract::State<State>,
+    extract::Query(query): extract::Query<SplitQuery>,
+) {
+}
