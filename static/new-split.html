@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link href="css/style.css" rel="stylesheet" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("add-participant")
+          .addEventListener("click", () => {
+            const input = document.createElement("input");
+            input.name = "participants[]";
+            input.placeholder = "Name";
+            input.required = true;
+            document.getElementById("add-participant").before(input);
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Split the Bob</h1>
+      <h2>New split</h2>
+    </header>
+    <div>
+      <div id="errors"></div>
+
+      <form action="./split#errors" method="post" target="htmz">
+        <label>
+          Split description: <input type="text" name="description" />
+        </label>
+        <div>
+          Participants:
+          <input name="participants[]" placeholder="Name" required />
+          <button type="button" id="add-participant">Add participant</button>
+        </div>
+        <input type="submit" value="Create" />
+      </form>
+    </div>
+
+    <iframe
+      hidden
+      name="htmz"
+      onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"
+    ></iframe>
+  </body>
+</html>

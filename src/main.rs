@@ -3,19 +3,19 @@ use axum::{
     http::StatusCode,
     routing::{get, post},
 };
-use db::DB;
 use std::env;
 use tower_http::services::ServeDir;
 
-mod db;
-mod split;
-mod split_repo;
-mod expense_repo;
+use crate::axum_state::State;
+use crate::db::DB;
+use crate::splits::split_service::split_service;
 
-#[derive(Clone)]
-struct State {
-    db: DB,
-}
+mod axum_state;
+mod db;
+mod error;
+mod expenses;
+mod splits;
+mod balances;
 
 #[tokio::main]
 async fn main() {
@@ -24,9 +24,10 @@ async fn main() {
 
     let static_files = ServeDir::new("./static");
     let db = DB::new(&db_url).await.unwrap();
-    let state = { db };
+    let state = State { db };
 
     let app = Router::new()
+        .nest("/split", split_service())
         .fallback_service(static_files)
         .with_state(state);
 
@@ -35,16 +36,4 @@ async fn main() {
         .unwrap();
     println!("Starting server on 0.0.0.0:{port}");
     axum::serve(listener, app).await.unwrap();
-}
-
-#[derive(serde::Deserialize)]
-struct SplitQuery {
-    split_name: String,
-    split_code: String,
-}
-
-async fn show_split(
-    extract::State(state): extract::State<State>,
-    extract::Query(query): extract::Query<SplitQuery>,
-) {
 }

@@ -1,7 +1,9 @@
-use crate::db::{DB, Error};
-use crate::split::{Expense, SplitMethod};
 use sqlx::{FromRow, sqlite::SqliteRow, types::Json};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use crate::db::DB;
+use crate::expenses::expense::{Expense, SplitMethod};
+use crate::error::Error;
 
 #[derive(FromRow)]
 struct ExpenseDTO {
@@ -32,7 +34,11 @@ impl From<Expense> for ExpenseDTO {
             currency: expense.currency,
             payed_by: expense.payed_by,
             payed_for: expense.payed_for.join(","),
-            expense_date: expense.expense_date.duration_since(UNIX_EPOCH).unwrap_or(Duration::ZERO).as_secs() as u32,
+            expense_date: expense
+                .expense_date
+                .duration_since(UNIX_EPOCH)
+                .unwrap_or(Duration::ZERO)
+                .as_secs() as u32,
             split_method: Json(expense.split_method.into()),
         }
     }
@@ -84,28 +90,34 @@ impl Into<SplitMethod> for SplitMethodDTO {
     }
 }
 
-struct ExpenseRepo {}
+pub struct ExpenseRepo {}
 
 impl ExpenseRepo {
-    pub async fn get_all(db: DB) -> Result<Vec<Expense>, Error> {
+    pub async fn get_all(db: &DB) -> Result<Vec<Expense>, Error> {
         let expense_dtos: Vec<ExpenseDTO> = sqlx::query_as("SELECT * FROM expenses")
             .fetch_all(db.get_pool())
             .await?;
 
-
-        Ok(expense_dtos.into_iter().map(|dto: ExpenseDTO| dto.into()).collect())
+        Ok(expense_dtos
+            .into_iter()
+            .map(|dto: ExpenseDTO| dto.into())
+            .collect())
     }
 
-    pub async fn get_for_split(db: DB, split_id: String) -> Result<Vec<Expense>, Error> {
-        let expense_dtos: Vec<ExpenseDTO> = sqlx::query_as("SELECT * FROM expenses WHERE split_id = ?")
-            .bind(split_id)
-            .fetch_all(db.get_pool())
-            .await?;
+    pub async fn get_for_split(db: &DB, split_id: &str) -> Result<Vec<Expense>, Error> {
+        let expense_dtos: Vec<ExpenseDTO> =
+            sqlx::query_as("SELECT * FROM expenses WHERE split_id = ?")
+                .bind(split_id)
+                .fetch_all(db.get_pool())
+                .await?;
 
-        Ok(expense_dtos.into_iter().map(|dto: ExpenseDTO| dto.into()).collect())
+        Ok(expense_dtos
+            .into_iter()
+            .map(|dto: ExpenseDTO| dto.into())
+            .collect())
     }
 
-    pub async fn create(db: DB, expense: Expense) -> Result<(), Error> {
+    pub async fn create(db: &DB, expense: Expense) -> Result<(), Error> {
         let dto: ExpenseDTO = expense.into();
         sqlx::query(r#"
         INSERT INTO expenses (split_id, name, amount, currency, payed_by, payed_for, expense_date, split_method) 
@@ -125,9 +137,10 @@ impl ExpenseRepo {
         Ok(())
     }
 
-    pub async fn update(db: DB, expense: Expense) -> Result<(), Error> {
+    pub async fn update(db: &DB, expense: Expense) -> Result<(), Error> {
         let dto: ExpenseDTO = expense.into();
-        sqlx::query(r#"
+        sqlx::query(
+            r#"
         UPDATE expenses 
         SET name = ?, 
             amount = ?,
@@ -137,22 +150,23 @@ impl ExpenseRepo {
             expense_date = ?,
             split_method = ?
         WHERE id = ?
-        "#)
-            .bind(dto.name)
-            .bind(dto.amount)
-            .bind(dto.currency)
-            .bind(dto.payed_by)
-            .bind(dto.payed_for)
-            .bind(dto.expense_date)
-            .bind(dto.split_method)
-            .bind(dto.id)
-            .execute(db.get_pool())
-            .await?;
+        "#,
+        )
+        .bind(dto.name)
+        .bind(dto.amount)
+        .bind(dto.currency)
+        .bind(dto.payed_by)
+        .bind(dto.payed_for)
+        .bind(dto.expense_date)
+        .bind(dto.split_method)
+        .bind(dto.id)
+        .execute(db.get_pool())
+        .await?;
 
         Ok(())
     }
 
-    pub async fn delete(db: DB, id: String) -> Result<(), Error> {
+    pub async fn delete(db: &DB, id: String) -> Result<(), Error> {
         sqlx::query("DELETE FROM expenses WHERE id = ?")
             .bind(id)
             .execute(db.get_pool())

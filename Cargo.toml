@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 askama = "0.15.4"
 axum = "0.8.8"
+axum-extra = { version = "0.12.5", features = ["form"] }
 serde = "1.0.228"
 sqlx = { version = "0.8.6", features = ["json", "runtime-tokio", "sqlite"] }
 tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread"] }
