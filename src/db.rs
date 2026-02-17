@@ -1,23 +1,27 @@
-use std::env::temp_dir;
-
-use fjall::{Database, Keyspace,  PersistMode};
+use sqlx::sqlite::SqlitePool;
 
 #[derive(Clone)]
 pub struct DB {
-    db: Database,
-    keyspace: Keyspace,
+    pool: SqlitePool,
 }
 
 #[derive(Debug)]
 pub enum Error {
-    FjallError(fjall::Error)
+    SqlxError(sqlx::Error),
+    MigrateError(sqlx::migrate::MigrateError),
 }
 
 impl DB {
-    pub fn new(path: &str, keyspace: &str) -> Result<DB, Error> {
-        let db = Database::builder(path).open().map_err(Error::FjallError)?;
-        let tree = db.keyspace(keyspace, fjall::KeyspaceCreateOptions::default).map_err(Error::FjallError)?;
-        
-        Ok(DB { db: db, keyspace: tree })
+    pub async fn new(db_url: &str) -> Result<DB, Error> {
+        let pool = SqlitePool::connect(db_url)
+            .await
+            .map_err(Error::SqlxError)?;
+
+        sqlx::migrate!("./migrations")
+            .run(&pool)
+            .await
+            .map_err(Error::MigrateError)?;
+
+        Ok(DB { pool: pool })
     }
 }

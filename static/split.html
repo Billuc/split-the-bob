@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>Split the Bob</h1>
+      <h2>My first split</h2>
+    </header>
+
+    <main>
+      <div>
+        <h3>Split code: 1234</h3>
+        <p>Share this code with your friends to let them join the split.</p>
+      </div>
+      <div>
+        <h3>Participants</h3>
+        <ul>
+          <li>Alice</li>
+          <li>Bob</li>
+          <li>Charlie</li>
+        </ul>
+      </div>
+      <div id="expenses">
+        <h3>Expenses</h3>
+        <ul>
+          <li>Alice paid $30 for dinner</li>
+          <li>Bob paid $20 for drinks</li>
+          <li>Charlie paid $50 for tickets</li>
+        </ul>
+        <form
+          action="./expenses.html#expenses"
+          target="htmz"
+          id="add-expense-form"
+        >
+          <label
+            >Who paid ?
+            <select name="payer">
+              <option value="alice">Alice</option>
+              <option value="bob">Bob</option>
+              <option value="charlie">Charlie</option>
+            </select>
+          </label>
+          <label>Amount: <input type="number" name="amount" /></label>
+          <label>Description: <input type="text" name="description" /></label>
+          <label>
+            Split between:
+            <input type="checkbox" name="split-between" value="alice" /> Alice
+            <input type="checkbox" name="split-between" value="bob" /> Bob
+            <input type="checkbox" name="split-between" value="charlie" />
+            Charlie
+          </label>
+          <input type="submit" value="Add expense" />
+        </form>
+
+        <h3>Balances</h3>
+        <ul>
+          <li>Alice owes $10 to Charlie</li>
+          <li>Bob owes $20 to Charlie</li>
+        </ul>
+      </div>
+    </main>
+
+    <iframe
+      hidden
+      name="htmz"
+      onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"
+    ></iframe>
+  </body>
+</html>

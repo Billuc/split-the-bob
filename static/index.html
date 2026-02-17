@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header>
+      <h1>Split the Bob</h1>
+    </header>
+    <div>
+      <div>
+        <button>Create a split</button>
+      </div>
+      <div>
+        <form action="./split.html">
+          <label> Split name: <input type="text" name="split-name" /> </label>
+          <label> Split code: <input type="text" name="split-code" /> </label>
+          <input type="submit" value="Join split" />
+        </form>
+      </div>
+    </div>
+
+    <iframe
+      hidden
+      name="htmz"
+      onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"
+    ></iframe>
+  </body>
+</html>
