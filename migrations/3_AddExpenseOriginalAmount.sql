@@ -1,2 +1,2 @@
-ALTER TABLE expenses ADD COLUMN original_amount REAL NOT NULL DEFAULT 0;
-ALTER TABLE expenses ADD COLUMN original_currency TEXT NOT NULL DEFAULT 'EUR';
+ALTER TABLE expenses ADD COLUMN original_amount REAL NOT NULL;
+ALTER TABLE expenses ADD COLUMN original_currency TEXT NOT NULL;

@@ -1,4 +1,4 @@
-use axum::{response::IntoResponse, Router, extract, http::StatusCode};
+use axum::{response::IntoResponse, Router, extract, http::StatusCode, routing::{get, post}};
 use axum_extra::extract::Form;
 use askama::Template;
 
@@ -10,13 +10,14 @@ use crate::expenses::expense_repo::ExpenseRepo;
 use crate::splits::split_view;
 
 pub fn split_service() -> axum::Router<State> {
-    Router::new().route("/", axum::routing::post(create_split))
+    Router::new()
+        .route("/", post(create_split))
+        .route("/", get(show_split))
 }
 
 #[derive(serde::Deserialize)]
 struct SplitQuery {
     split_id: String,
-    split_code: String,
 }
 
 async fn show_split(
@@ -41,6 +42,7 @@ struct CreateSplitForm {
     description: String,
     #[serde(rename = "participants[]")]
     participants: Vec<String>,
+    default_currency: String,
 }
 
 pub async fn create_split(
@@ -51,6 +53,7 @@ pub async fn create_split(
         id: String::new(),
         description: form.description.clone(),
         usernames: form.participants.clone(),
+        default_currency: form.default_currency.clone(),
     };
 
     let id = SplitRepo::create(&state.db, new_split).await?;

@@ -7,7 +7,6 @@ use crate::error::Error;
 #[derive(FromRow)]
 struct SplitDTO {
     id: String,
-    code: String,
     description: String,
     usernames: String,
     default_currency: String,
@@ -17,7 +16,6 @@ impl From<Split> for SplitDTO {
     fn from(split: Split) -> Self {
         SplitDTO {
             id: split.id,
-            code: split.code,
             description: split.description,
             usernames: split.usernames.join(","),
             default_currency: split.default_currency,
@@ -29,7 +27,6 @@ impl Into<Split> for SplitDTO {
     fn into(self) -> Split {
         Split {
             id: self.id,
-            code: self.code,
             description: self.description,
             usernames: self.usernames.split(",").map(|s| s.to_string()).collect(),
             default_currency: self.default_currency,
@@ -66,9 +63,8 @@ impl SplitRepo {
         let dto: SplitDTO = split.into();
         let id = Self::generate_id();
 
-        sqlx::query("INSERT INTO splits (id, code, description, usernames, default_currency) VALUES (?, ?, ?, ?, ?)")
+        sqlx::query("INSERT INTO splits (id, description, usernames, default_currency) VALUES (?, ?, ?, ?, ?)")
             .bind(id.clone())
-            .bind(dto.code)
             .bind(dto.description)
             .bind(dto.usernames)
             .bind(dto.default_currency)
