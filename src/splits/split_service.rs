@@ -1,7 +1,8 @@
 use askama::Template;
 use axum::{
     Router, extract,
-    response::{Html, IntoResponse},
+    http::StatusCode,
+    response::{Html, IntoResponse, Response},
     routing::{get, post},
 };
 use axum_extra::extract::Form;
@@ -44,7 +45,7 @@ struct CreateSplitForm {
 pub async fn create_split(
     extract::State(state): extract::State<State>,
     Form(form): Form<CreateSplitForm>,
-) -> Result<impl IntoResponse, Error> {
+) -> Result<Response, Error> {
     let new_split = Split {
         id: String::new(),
         description: form.description.clone(),
@@ -52,16 +53,22 @@ pub async fn create_split(
         default_currency: form.default_currency.clone(),
     };
 
-    match SplitRepo::create(&state.db, new_split).await {
+    let response = match SplitRepo::create(&state.db, new_split).await {
         Err(error) => {
             eprintln!("Error creating split: {:?}", error);
-            new_split_view(vec![error])
+            new_split_view(vec![error]).into_response()
         }
         Ok(id) => {
             println!("Created split with id {}", id);
-            get_split_view(&state.db, id).await
+            (
+                StatusCode::SEE_OTHER,
+                [("Location", format!("/split?split_id={id}"))],
+            )
+                .into_response()
         }
-    }
+    };
+
+    Ok(response)
 }
 
 pub async fn new_split_form() -> Result<impl IntoResponse, Error> {

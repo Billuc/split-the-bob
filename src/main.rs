@@ -1,7 +1,13 @@
-use axum::{Router, middleware::{self, Next}, response::{Response, Html}, extract::Request, routing::get};
+use askama::Template;
+use axum::{
+    Router,
+    extract::Request,
+    middleware::{self, Next},
+    response::{Html, Response},
+    routing::get,
+};
 use std::env;
 use tower_http::services::ServeDir;
-use askama::Template;
 
 use crate::axum_state::State;
 use crate::db::DB;
@@ -28,7 +34,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(index))
         .nest("/split", split_service())
-//         .layer(middleware::from_fn(full_page_middleware))
+        //         .layer(middleware::from_fn(full_page_middleware))
         .fallback_service(static_files)
         .with_state(state);
 
@@ -47,7 +53,7 @@ async fn index() -> Result<Html<String>, Error> {
 
 // async fn full_page_middleware(req: Request, next: Next) -> Response {
 //     let partial_response = next.run(req).await;
-// 
+//
 //     let response = match req.headers().get("Sec-Fetch-Dest") {
 //         Some("document") => {
 //             todo!();

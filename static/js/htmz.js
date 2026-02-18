@@ -3,7 +3,7 @@ function htmz(frame) {
     return;
   }
 
-  const newUrl = frame.contentWindow.location.href;
+  const newUrl = new URL(frame.contentWindow.location.href);
   newUrl.hash = "";
   window.history.pushState(null, "", newUrl);
 
