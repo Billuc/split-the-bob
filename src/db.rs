@@ -1,5 +1,5 @@
 use crate::error::Error;
-use sqlx::{FromRow, sqlite::SqlitePool, sqlite::SqliteRow};
+use sqlx::sqlite::SqlitePool;
 
 #[derive(Clone)]
 pub struct DB {

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}SplitTheBob - New Split{% endblock %}
+
+{% block content %}
+<div id="errors">
+  {% for error in errors %}
+  <p class="error">{{ error }}</p>
+  {% endfor %}
+</div>
+
+<form action="./split/new#main" method="post" target="htmz">
+  <label> Split description: <input type="text" name="description" /> </label>
+  <div>
+    Participants:
+    <input name="participants[]" placeholder="Name" required />
+    <button type="button" id="add-participant">Add participant</button>
+  </div>
+  <label>
+    Default currency:
+    <input type="text" name="default_currency" value="USD" />
+  </label>
+  <input type="submit" value="Create" />
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("add-participant").addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.name = "participants[]";
+      input.placeholder = "Name";
+      input.required = true;
+      document.getElementById("add-participant").before(input);
+    });
+  });
+</script>
+{% endblock %}

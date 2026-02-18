@@ -1,8 +1,8 @@
-use sqlx::{FromRow, sqlite::SqliteRow};
+use sqlx::FromRow;
 
 use crate::db::DB;
-use crate::splits::split::Split;
 use crate::error::Error;
+use crate::splits::split::Split;
 
 #[derive(FromRow)]
 struct SplitDTO {
@@ -38,10 +38,9 @@ pub struct SplitRepo {}
 
 impl SplitRepo {
     pub async fn get_all(db: &DB) -> Result<Vec<Split>, Error> {
-        let split_dtos: Vec<SplitDTO> =
-            sqlx::query_as("SELECT * FROM splits")
-                .fetch_all(db.get_pool())
-                .await?;
+        let split_dtos: Vec<SplitDTO> = sqlx::query_as("SELECT * FROM splits")
+            .fetch_all(db.get_pool())
+            .await?;
 
         Ok(split_dtos
             .into_iter()
@@ -50,11 +49,10 @@ impl SplitRepo {
     }
 
     pub async fn get_by_id(db: &DB, id: String) -> Result<Split, Error> {
-        let dto: SplitDTO =
-            sqlx::query_as("SELECT * FROM splits WHERE id = ?")
-                .bind(id)
-                .fetch_one(db.get_pool())
-                .await?;
+        let dto: SplitDTO = sqlx::query_as("SELECT * FROM splits WHERE id = ?")
+            .bind(id)
+            .fetch_one(db.get_pool())
+            .await?;
 
         Ok(dto.into())
     }
@@ -63,13 +61,15 @@ impl SplitRepo {
         let dto: SplitDTO = split.into();
         let id = Self::generate_id();
 
-        sqlx::query("INSERT INTO splits (id, description, usernames, default_currency) VALUES (?, ?, ?, ?, ?)")
-            .bind(id.clone())
-            .bind(dto.description)
-            .bind(dto.usernames)
-            .bind(dto.default_currency)
-            .execute(db.get_pool())
-            .await?;
+        sqlx::query(
+            "INSERT INTO splits (id, description, usernames, default_currency) VALUES (?, ?, ?, ?)",
+        )
+        .bind(id.clone())
+        .bind(dto.description)
+        .bind(dto.usernames)
+        .bind(dto.default_currency)
+        .execute(db.get_pool())
+        .await?;
 
         Ok(id)
     }

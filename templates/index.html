@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<div>
+  <div>
+    <a href="./split/new#main" target="htmz">Create a split</a>
+  </div>
+  <div>
+    <form action="./split#main" target="htmz">
+      <label> Split id: <input type="text" name="split_id" /> </label>
+      <input type="submit" value="Join split" />
+    </form>
+  </div>
+</div>
+{% endblock %}

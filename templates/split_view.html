@@ -1,55 +1,59 @@
-<main>
-  <div>
-    <h3>Split code: 1234</h3>
-    <p>Share this code with your friends to let them join the split.</p>
-  </div>
-  <div>
-    <h3>Participants</h3>
-    <ul>
-      {% for participant in split.usernames %}
-      <li>{{ participant }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div id="expenses">
-    <h3>Expenses</h3>
-    <ul>
-      {% for expense in expenses %}
-      <li>
-        {{ expense.payed_by }} paid {{ expense.amount }}{{ expense.currency }}
-        for {{ expense.name }}
-      </li>
-      {% endfor %}
-    </ul>
-    <form action="./expenses.html#expenses" target="htmz" id="add-expense-form">
-      <label>
-        Who paid ?
-        <select name="payer">
-          {% for participant in split.usernames %}
-          <option value="{{ participant }}">{{ participant }}</option>
-          {% endfor %}
-        </select>
-      </label>
-      <label>Amount: <input type="number" name="amount" /></label>
-      <label>Description: <input type="text" name="description" /></label>
-      <label>
-        Split between:
-        <input type="checkbox" name="split-between" value="alice" /> Alice
-        <input type="checkbox" name="split-between" value="bob" /> Bob
-        <input type="checkbox" name="split-between" value="charlie" />
-        Charlie
-      </label>
-      <input type="submit" value="Add expense" />
-    </form>
+{% extends "base.html" %}
 
-    <h3>Balances</h3>
-    <ul>
-      {% for balance in balances %}
-      <li>
-        {{ balance.ower }} owes {{ balance.amount }}{{ balance.currency }} to {{
-        balance.owee }}
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</main>
+{% block title %}SplitTheBob - {{ split.description }}{% endblock %}
+
+{% block content %}
+<div>
+  <h3>Split code: 1234</h3>
+  <p>Share this code with your friends to let them join the split.</p>
+</div>
+<div>
+  <h3>Participants</h3>
+  <ul>
+    {% for participant in split.usernames %}
+    <li>{{ participant }}</li>
+    {% endfor %}
+  </ul>
+</div>
+<div id="expenses">
+  <h3>Expenses</h3>
+  <ul>
+    {% for expense in expenses %}
+    <li>
+      {{ expense.payed_by }} paid {{ expense.amount }}{{ expense.currency }}
+      for {{ expense.name }}
+    </li>
+    {% endfor %}
+  </ul>
+  <form action="./expenses.html#expenses" target="htmz" id="add-expense-form">
+    <label>
+      Who paid ?
+      <select name="payer">
+        {% for participant in split.usernames %}
+        <option value="{{ participant }}">{{ participant }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Amount: <input type="number" name="amount" /></label>
+    <label>Description: <input type="text" name="description" /></label>
+    <label>
+      Split between:
+      <input type="checkbox" name="split-between" value="alice" /> Alice
+      <input type="checkbox" name="split-between" value="bob" /> Bob
+      <input type="checkbox" name="split-between" value="charlie" />
+      Charlie
+    </label>
+    <input type="submit" value="Add expense" />
+  </form>
+
+  <h3>Balances</h3>
+  <ul>
+    {% for balance in balances %}
+    <li>
+      {{ balance.ower }} owes {{ balance.amount }}{{ balance.currency }} to {{
+      balance.owee }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

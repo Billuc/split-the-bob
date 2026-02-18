@@ -6,28 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title></title>
     <link href="css/style.css" rel="stylesheet" />
+    <script src="js/htmz.js" defer></script>
   </head>
   <body>
     <header>
       <h1>Split the Bob</h1>
     </header>
-    <div>
-      <div>
-        <a href="./new-split.html">Create a split</a>
-      </div>
-      <div>
-        <form action="./split.html">
-          <label> Split id: <input type="text" name="split_id" /> </label>
-          <label> Split code: <input type="text" name="split_code" /> </label>
-          <input type="submit" value="Join split" />
-        </form>
-      </div>
-    </div>
 
-    <iframe
-      hidden
-      name="htmz"
-      onload="setTimeout(()=>document.querySelector(contentWindow.location.hash||null)?.replaceWith(...contentDocument.body.childNodes))"
-    ></iframe>
+    <main id="main">
+      <div>
+        <div>
+          <a href="./split/new#main" target="htmz">Create a split</a>
+        </div>
+        <div>
+          <form action="./split#main" target="htmz">
+            <label> Split id: <input type="text" name="split_id" /> </label>
+            <input type="submit" value="Join split" />
+          </form>
+        </div>
+      </div>
+    </main>
   </body>
 </html>

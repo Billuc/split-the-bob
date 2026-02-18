@@ -1,6 +1,7 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::response::Response;
+use std::fmt::Display;
 
 #[derive(Debug)]
 pub enum Error {
@@ -24,6 +25,16 @@ impl From<sqlx::migrate::MigrateError> for Error {
 impl From<askama::Error> for Error {
     fn from(err: askama::Error) -> Self {
         Error::TemplateError(err)
+    }
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Error::SqlxError(err) => write!(f, "Database error: {}", err),
+            Error::MigrateError(err) => write!(f, "Migration error: {}", err),
+            Error::TemplateError(err) => write!(f, "Template rendering error: {}", err),
+        }
     }
 }
 
