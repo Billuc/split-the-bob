@@ -12,6 +12,8 @@ struct ExpenseDTO {
     name: String,
     amount: f32,
     currency: String,
+    original_amount: f32,
+    original_currency: String,
     payed_by: String,
     payed_for: String,
     expense_date: u32,
@@ -32,6 +34,8 @@ impl From<Expense> for ExpenseDTO {
             name: expense.name,
             amount: expense.amount,
             currency: expense.currency,
+            original_amount: expense.original_amount,
+            original_currency: expense.original_currency,
             payed_by: expense.payed_by,
             payed_for: expense.payed_for.join(","),
             expense_date: expense
@@ -52,6 +56,8 @@ impl Into<Expense> for ExpenseDTO {
             name: self.name,
             amount: self.amount,
             currency: self.currency,
+            original_amount: self.original_amount,
+            original_currency: self.original_currency,
             payed_by: self.payed_by,
             payed_for: self.payed_for.split(",").map(|s| s.to_string()).collect(),
             expense_date: UNIX_EPOCH + Duration::from_secs(self.expense_date as u64),
@@ -120,13 +126,15 @@ impl ExpenseRepo {
     pub async fn create(db: &DB, expense: Expense) -> Result<(), Error> {
         let dto: ExpenseDTO = expense.into();
         sqlx::query(r#"
-        INSERT INTO expenses (split_id, name, amount, currency, payed_by, payed_for, expense_date, split_method) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO expenses (split_id, name, amount, currency, original_amount, original_currency, payed_by, payed_for, expense_date, split_method) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         "#)
             .bind(dto.split_id)
             .bind(dto.name)
             .bind(dto.amount)
             .bind(dto.currency)
+            .bind(dto.original_amount)
+            .bind(dto.original_currency)
             .bind(dto.payed_by)
             .bind(dto.payed_for)
             .bind(dto.expense_date)
@@ -145,6 +153,8 @@ impl ExpenseRepo {
         SET name = ?, 
             amount = ?,
             currency = ?,
+            original_amount = ?,
+            original_currency = ?,
             payed_by = ?,
             payed_for = ?,
             expense_date = ?,
@@ -155,6 +165,8 @@ impl ExpenseRepo {
         .bind(dto.name)
         .bind(dto.amount)
         .bind(dto.currency)
+        .bind(dto.original_amount)
+        .bind(dto.original_currency)
         .bind(dto.payed_by)
         .bind(dto.payed_for)
         .bind(dto.expense_date)

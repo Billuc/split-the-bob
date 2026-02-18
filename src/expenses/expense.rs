@@ -4,6 +4,8 @@ pub struct Expense {
     pub name: String,
     pub amount: f32,
     pub currency: String,
+    pub original_amount: f32,
+    pub original_currency: String,
     pub payed_by: String,
     pub payed_for: Vec<String>,
     pub expense_date: std::time::SystemTime,
