@@ -1,0 +1,47 @@
+<button id="{{ expense.id }}-button" popovertarget="{{ expense.id }}">Edit</button>
+<article popover id="{{ expense.id }}">
+  <form
+    action="./expenses/update#main"
+    target="htmz"
+    class="expense-form"
+    method="POST"
+  >
+    <input type="hidden" name="id" value="{{ expense.id }}" />
+    <label>Name: <input type="text" name="name" value="{{ expense.name }}" /></label>
+    <label>Amount: <input type="number" name="amount" value="{{ expense.amount }}" /></label>
+    <label>Currency: <input type="text" name="currency" value="{{ expense.currency }}" /></label>
+    <label>
+      Who paid ?
+      <select name="payed_by">
+        {% for participant in split.usernames %}
+        {% let selected = participant == &expense.payed_by %}
+        <option 
+            value="{{ participant }}"
+            {% if selected %}selected{% endif %}
+        >{{ participant }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Split between: {% for participant in split.usernames %}
+      {% let checked = expense.payed_for.contains(participant) %}
+      <input
+        type="checkbox"
+        name="payed_for[]"
+        value="{{ participant }}"
+        {% if checked %}checked{% endif %}
+      />
+      {{ participant }} {% endfor %}
+    </label>
+    <label>
+      Date:
+      <input
+        type="datetime-local"
+        name="expense_date_display"
+        id="expense_date_display"
+      />
+      <input type="hidden" name="expense_date" id="expense_date" value="0" />
+    </label>
+    <input type="submit" value="Add expense" />
+  </form>
+</article>

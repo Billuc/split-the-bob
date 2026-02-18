@@ -62,7 +62,7 @@ pub async fn create_split(
             println!("Created split with id {}", id);
             (
                 StatusCode::SEE_OTHER,
-                [("Location", format!("/split?split_id={id}"))],
+                [("Location", format!("/splits?split_id={id}"))],
             )
                 .into_response()
         }

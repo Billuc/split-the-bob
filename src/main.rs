@@ -12,6 +12,7 @@ use tower_http::services::ServeDir;
 use crate::axum_state::State;
 use crate::db::DB;
 use crate::error::Error;
+use crate::expenses::expense_service::expense_service;
 use crate::splits::split_service::split_service;
 
 mod axum_state;
@@ -33,7 +34,8 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(index))
-        .nest("/split", split_service())
+        .nest("/splits", split_service())
+        .nest("/expenses", expense_service())
         //         .layer(middleware::from_fn(full_page_middleware))
         .fallback_service(static_files)
         .with_state(state);

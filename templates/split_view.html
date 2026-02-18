@@ -1,8 +1,5 @@
-{% extends "base.html" %}
-
-{% block title %}SplitTheBob - {{ split.description }}{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}SplitTheBob - {{ split.description
+}}{% endblock %} {% block content %}
 <div>
   <h3>Split code: 1234</h3>
   <p>Share this code with your friends to let them join the split.</p>
@@ -16,35 +13,85 @@
   </ul>
 </div>
 <div id="expenses">
-  <h3>Expenses</h3>
+  <h3>Dépenses</h3>
   <ul>
-    {% for expense in expenses %}
+    {% for expense in expenses %} {% decl timestamp %} {% match
+    expense.expense_date.duration_since(SystemTime::UNIX_EPOCH) %} {% when Ok
+    with (duration) %} {% let timestamp = duration.as_secs_f32() %} {% else %}
+    {% let timestamp = 0.0 %} {% endmatch %}
     <li>
-      {{ expense.payed_by }} paid {{ expense.amount }}{{ expense.currency }}
-      for {{ expense.name }}
+      <span class="expense-date" data-timestamp="{{ timestamp }}"></span> -
+      {{expense.name }} - {{ expense.payed_by }} a payé {{ expense.amount }}{{
+      expense.currency }} pour {{ expense.payed_for | join(", ") }}
     </li>
-    {% endfor %}
+    {% include "expense_form.html" %} {% endfor %}
   </ul>
-  <form action="./expenses.html#expenses" target="htmz" id="add-expense-form">
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const expenseDates = document.querySelectorAll(".expense-date");
+      for (const span of expenseDates) {
+        const timestamp = parseFloat(span.getAttribute("data-timestamp"));
+        if (!isNaN(timestamp)) {
+          const date = new Date(timestamp * 1000);
+          span.textContent = date.toLocaleString();
+        }
+      }
+    });
+  </script>
+
+  <form
+    action="./expenses/new#main"
+    target="htmz"
+    id="add-expense-form"
+    method="POST"
+  >
+    <input type="hidden" name="split_id" value="{{ split.id }}" />
+    <label>Name: <input type="text" name="name" /></label>
+    <label>Amount: <input type="number" name="amount" /></label>
+    <label>Currency: <input type="text" name="currency" /></label>
     <label>
       Who paid ?
-      <select name="payer">
+      <select name="payed_by">
         {% for participant in split.usernames %}
         <option value="{{ participant }}">{{ participant }}</option>
         {% endfor %}
       </select>
     </label>
-    <label>Amount: <input type="number" name="amount" /></label>
-    <label>Description: <input type="text" name="description" /></label>
     <label>
-      Split between:
-      <input type="checkbox" name="split-between" value="alice" /> Alice
-      <input type="checkbox" name="split-between" value="bob" /> Bob
-      <input type="checkbox" name="split-between" value="charlie" />
-      Charlie
+      Split between: {% for participant in split.usernames %}
+      <input
+        type="checkbox"
+        name="payed_for[]"
+        value="{{ participant }}"
+        checked="true"
+      />
+      {{ participant }} {% endfor %}
+    </label>
+    <label>
+      Date:
+      <input
+        type="datetime-local"
+        name="expense_date_display"
+        id="expense_date_display"
+      />
+      <input type="hidden" name="expense_date" id="expense_date" value="0" />
     </label>
     <input type="submit" value="Add expense" />
   </form>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document
+        .getElementById("expense_date_display")
+        .addEventListener("change", function (e) {
+          const dateValue = e.target.value;
+          if (dateValue) {
+            // Convert datetime-local (YYYY-MM-DDTHH:mm) to Unix timestamp in seconds
+            const timestamp = Date.parse(dateValue) / 1000;
+            document.getElementById("expense_date").value = timestamp;
+          }
+        });
+    });
+  </script>
 
   <h3>Balances</h3>
   <ul>

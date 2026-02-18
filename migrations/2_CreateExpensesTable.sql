@@ -9,5 +9,5 @@ CREATE TABLE expenses (
     payed_by TEXT NOT NULL,
     payed_for TEXT NOT NULL,
     expense_date REAL NOT NULL,
-    split TEXT NOT NULL
+    split_method TEXT NOT NULL
 );

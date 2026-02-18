@@ -16,7 +16,7 @@ struct ExpenseDTO {
     original_currency: String,
     payed_by: String,
     payed_for: String,
-    expense_date: u32,
+    expense_date: f32,
     split_method: Json<SplitMethodDTO>,
 }
 
@@ -42,7 +42,7 @@ impl From<Expense> for ExpenseDTO {
                 .expense_date
                 .duration_since(UNIX_EPOCH)
                 .unwrap_or(Duration::ZERO)
-                .as_secs() as u32,
+                .as_secs_f32(),
             split_method: Json(expense.split_method.into()),
         }
     }
@@ -60,7 +60,7 @@ impl Into<Expense> for ExpenseDTO {
             original_currency: self.original_currency,
             payed_by: self.payed_by,
             payed_for: self.payed_for.split(",").map(|s| s.to_string()).collect(),
-            expense_date: UNIX_EPOCH + Duration::from_secs(self.expense_date as u64),
+            expense_date: UNIX_EPOCH + Duration::from_secs_f32(self.expense_date),
             split_method: self.split_method.0.into(),
         }
     }
