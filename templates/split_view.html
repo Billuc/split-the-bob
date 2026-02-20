@@ -39,45 +39,8 @@
     });
   </script>
 
-  <form
-    action="./expenses/new#main"
-    target="htmz"
-    id="add-expense-form"
-    method="POST"
-  >
-    <input type="hidden" name="split_id" value="{{ split.id }}" />
-    <label>Name: <input type="text" name="name" /></label>
-    <label>Amount: <input type="number" name="amount" /></label>
-    <label>Currency: <input type="text" name="currency" /></label>
-    <label>
-      Who paid ?
-      <select name="payed_by">
-        {% for participant in split.usernames %}
-        <option value="{{ participant }}">{{ participant }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Split between: {% for participant in split.usernames %}
-      <input
-        type="checkbox"
-        name="payed_for[]"
-        value="{{ participant }}"
-        checked="true"
-      />
-      {{ participant }} {% endfor %}
-    </label>
-    <label>
-      Date:
-      <input
-        type="datetime-local"
-        name="expense_date_display"
-        id="expense_date_display"
-      />
-      <input type="hidden" name="expense_date" id="expense_date" value="0" />
-    </label>
-    <input type="submit" value="Add expense" />
-  </form>
+  {% include "new_expense_form.html" %}
+  
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document
@@ -97,8 +60,8 @@
   <ul>
     {% for balance in balances %}
     <li>
-      {{ balance.ower }} owes {{ balance.amount }}{{ balance.currency }} to {{
-      balance.owee }}
+      {{ balance.debtor }} owes {{ balance.amount }}{{ balance.currency }} to {{
+      balance.creditor }}
     </li>
     {% endfor %}
   </ul>

@@ -7,7 +7,7 @@ use axum::{
 };
 use axum_extra::extract::Form;
 
-use crate::axum_state::State;
+use crate::{axum_state::State, balances::balance::balances_from_expenses};
 use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense_repo::ExpenseRepo;
@@ -78,7 +78,7 @@ pub async fn new_split_form() -> Result<impl IntoResponse, Error> {
 async fn get_split_view(db: &DB, id: String) -> Result<Html<String>, Error> {
     let split = SplitRepo::get_by_id(db, id).await?;
     let expenses = ExpenseRepo::get_for_split(db, &split.id).await?;
-    let balances = vec![]; // TODO: calculate balances
+    let balances = balances_from_expenses(&expenses, split.default_currency.clone());
 
     let template = split_view::SplitView {
         split,

@@ -1,0 +1,6 @@
+- [ ] Calculate balances
+- [ ] Add participant to splitz
+- [ ] Translate 
+- [ ] Share splitz
+- [ ] Style forms
+- [ ] Handle different currencies

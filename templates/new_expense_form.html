@@ -1,0 +1,53 @@
+<button id="new-expense-button" popovertarget="new-expense">
+  Nouvelle dépense
+</button>
+<article popover id="new-expense">
+  <form
+    action="./expenses/new#main"
+    target="htmz"
+    class="expense-form"
+    method="POST"
+  >
+    <input type="hidden" name="split_id" value="{{ split.id }}" />
+    <label>
+      Nom:
+      <input type="text" name="name" />
+    </label>
+    <label>
+      Montant:
+      <input type="number" name="amount" />
+    </label>
+    <label>
+      Devise:
+      <input type="text" name="currency" value="{{ split.default_currency }}" />
+    </label>
+    <label>
+      Payé par:
+      <select name="payed_by">
+        {% for participant in split.usernames %}
+        <option value="{{ participant }}">{{ participant }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Réparti entre: {% for participant in split.usernames %}
+      <input
+        type="checkbox"
+        name="payed_for[]"
+        value="{{ participant }}"
+        checked
+      />
+      {{ participant }} {% endfor %}
+    </label>
+    <label>
+      Date:
+      <input
+        type="datetime-local"
+        name="expense_date_display"
+        id="expense_date_display"
+      />
+      <input type="hidden" name="expense_date" id="expense_date" value="0" />
+    </label>
+    <input type="submit" value="Add expense" />
+  </form>
+</article>
