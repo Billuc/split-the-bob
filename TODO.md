@@ -3,6 +3,8 @@
 - [x] Translate 
 - [ ] Share splitz
 - [ ] Style forms
-- [ ] Handle different currencies
-- [ ] IDs from nouns and adjectives
+- [ ] Handle different currencies with auto conversion
+    - https://www.exchangerate-api.com/docs/pair-conversion-requests
+    - https://www.exchangerate-api.com/docs/supported-currencies
+- [x] IDs from nouns and adjectives
 - [ ] Avoid duplicate participants

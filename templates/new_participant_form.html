@@ -1,0 +1,21 @@
+<button id="new-participant-button" popovertarget="new-participant">
+  Nouveau participant
+</button>
+<article popover id="new-participant">
+  <form
+    action="./splits#main"
+    target="htmz"
+    method="POST"
+    id="new-participant-form"
+  >
+    <input type="hidden" name="split_id" value="{{ split.id }}" />
+    {% for participant in split.participants %}
+    <input type="hidden" name="participants[]" value="{{ participant }}" />
+    {% endfor %}
+    <label>
+      Nom:
+      <input type="text" name="participants[]" />
+    </label>
+    <input type="submit" value="Ajouter le participant" />
+  </form>
+</article>

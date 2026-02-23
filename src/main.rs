@@ -20,6 +20,7 @@ mod error;
 mod expenses;
 mod splits;
 mod view;
+mod keys;
 
 #[tokio::main]
 async fn main() {

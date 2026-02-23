@@ -3,6 +3,7 @@ use sqlx::FromRow;
 use crate::db::DB;
 use crate::error::Error;
 use crate::splits::split::Split;
+use crate::keys::keys::KEY_GENERATOR;
 
 #[derive(FromRow)]
 struct SplitDTO {
@@ -71,7 +72,7 @@ impl SplitRepo {
     }
 
     pub async fn create(db: &DB, split: CreateSplit) -> Result<String, Error> {
-        let id = Self::generate_id();
+        let id = KEY_GENERATOR.generate_key();
 
         sqlx::query(
             "INSERT INTO splits (id, description, participants, default_currency) VALUES ($1, $2, $3, $4)",
@@ -111,13 +112,5 @@ impl SplitRepo {
             .await?;
 
         Ok(())
-    }
-
-    fn generate_id() -> String {
-        let nanos = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .subsec_nanos();
-        format!("{}", nanos)
     }
 }
