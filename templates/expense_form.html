@@ -40,7 +40,6 @@
 <article popover id="{{ expenseId }}">
   <form action="{{ action }}"
         target="htmz"
-        class="expense-form"
         method="post">
     {% if expense is not defined %}
       <input type="hidden" name="split_id" value="{{ split.id }}" />
@@ -74,17 +73,19 @@
         {% endfor %}
       </select>
     </label>
-    <label>
+    <b>
       Reparti entre:
       {% for participant in split.participants %}
         {% let checked = payedFor.contains(participant) %}
-        <input type="checkbox"
-               name="payed_for[]"
-               value="{{ participant }}"
-               {% if checked %}checked{% endif %} />
-        {{ participant }}
+        <label class="checkbox-label">
+          <input type="checkbox"
+                  name="payed_for[]"
+                  value="{{ participant }}"
+                  {% if checked %}checked{% endif %} />
+          {{ participant }}
+        </label>
       {% endfor %}
-    </label>
+    </b>
     <label>
       Date:
       <input type="datetime-local" name="expense_date_input" />

@@ -48,6 +48,12 @@ label {
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
+label.checkbox-label {
+  margin: 0.25rem;
+  font-weight: normal;
+  width: fit-content;
+  cursor: pointer;
+}
 
 input[type="submit"], button, .link-action {
   background-color: var(--primary);
@@ -78,14 +84,15 @@ input:not([type="submit"]):hover, select:hover {
 
 select, ::picker(select) {
   appearance: base-select;
-  border-radius: var(--border-radius);
   font-weight: normal;
   font-size: small;
 }
 
 ::picker(select) {
-  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--primary);
   top: calc(anchor(bottom) + 1px);
+  box-shadow: 0 0 5px var(--primary);
 }
 
 h2 {
@@ -135,6 +142,7 @@ article[popover] {
   box-sizing: border-box;
   font-size: medium;
   font-weight: normal;
+  text-align: start;
 }
 
 article[popover]::backdrop {
