@@ -11,7 +11,6 @@ use crate::{axum_state::State, balances::balance::balances_from_expenses, splits
 use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense_repo::ExpenseRepo;
-use crate::splits::split::Split;
 use crate::splits::split_repo::SplitRepo;
 use crate::splits::split_view;
 

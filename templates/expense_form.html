@@ -1,46 +1,96 @@
-<button id="{{ expense.id }}-button" popovertarget="{{ expense.id }}" class="ghost">Modifier</button>
-<article popover id="{{ expense.id }}">
-  <form
-    action="./expenses/update#main"
-    target="htmz"
-    class="expense-form"
-    method="POST"
-  >
-    <input type="hidden" name="id" value="{{ expense.id }}" />
-    <label>Nom: <input type="text" name="name" value="{{ expense.name }}" /></label>
-    <label>Montant: <input type="number" name="amount" value="{{ expense.amount }}" /></label>
-    <label>Devise: <input type="text" name="currency" value="{{ expense.currency }}" /></label>
+{% macro expense_form() %}
+
+{% decl buttonText %}
+{% decl submitText %}
+{% decl action %}
+{% decl expenseId %}
+{% decl currency %}
+{% decl payedBy %}
+{% decl payedFor %}
+{% decl timestamp %}
+
+{% if expense is defined %}
+  {% let buttonText = "Modifier" %}
+  {% let submitText = "Enregistrer" %}
+  {% let action = "./expenses/update#main" %}
+  {% let expenseId = expense.id %}
+  {% let currency = expense.currency %}
+  {% let payedBy = expense.payed_by %}
+  {% let payedFor = expense.payed_for %}
+  {% match expense.expense_date.duration_since(SystemTime::UNIX_EPOCH) %}
+    {% when Ok with (duration) %}
+      {% let timestamp = duration.as_secs_f32() %}
+    {% else %}
+      {% let timestamp = 0.0 %}
+  {% endmatch %}
+{% else %}
+  {% let buttonText = "Nouvelle dépense" %}
+  {% let submitText = "Ajouter la dépense" %}
+  {% let action = "./expenses/new#main" %}
+  {% let expenseId = "new-expense" %}
+  {% let currency = split.default_currency %}
+  {% let payedBy = "" %}
+  {% let payedFor = split.participants %}
+  {% let timestamp = 0.0 %}
+{% endif %}
+
+<button id="{{ expenseId }}-button"
+        popovertarget="{{ expenseId }}"
+        {% if expense is defined %}class="ghost"{% endif %}>{{ buttonText }}</button>
+<article popover id="{{ expenseId }}">
+  <form action="{{ action }}"
+        target="htmz"
+        class="expense-form"
+        method="post">
+    {% if expense is not defined %}
+      <input type="hidden" name="split_id" value="{{ split.id }}" />
+    {% else %}
+      <input type="hidden" name="id" value="{{ expenseId }}" />
+    {% endif %}
     <label>
-      Payé par: 
+      Nom:
+      <input type="text"
+             name="name"
+             {% if expense is defined %}value="{{ expense.name }}"{% endif %}
+             placeholder="Nouvelle dépense" />
+    </label>
+    <label>
+      Montant:
+      <input type="number"
+             name="amount"
+             {% if expense is defined %}value="{{ expense.amount }}"{% endif %}
+             placeholder="Montant" />
+    </label>
+    <label>
+      Devise:
+      <input type="text" name="currency" value="{{ currency }}" />
+    </label>
+    <label>
+      Payé par:
       <select name="payed_by">
         {% for participant in split.participants %}
-        {% let selected = participant == &expense.payed_by %}
-        <option 
-            value="{{ participant }}"
-            {% if selected %}selected{% endif %}
-        >{{ participant }}</option>
+          {% let selected = participant == payedBy %}
+          <option value="{{ participant }}" {% if selected %}selected{% endif %}>{{ participant }}</option>
         {% endfor %}
       </select>
     </label>
     <label>
-      Reparti entre: {% for participant in split.participants %}
-      {% let checked = expense.payed_for.contains(participant) %}
-      <input
-        type="checkbox"
-        name="payed_for[]"
-        value="{{ participant }}"
-        {% if checked %}checked{% endif %}
-      />
-      {{ participant }} {% endfor %}
+      Reparti entre:
+      {% for participant in split.participants %}
+        {% let checked = payedFor.contains(participant) %}
+        <input type="checkbox"
+               name="payed_for[]"
+               value="{{ participant }}"
+               {% if checked %}checked{% endif %} />
+        {{ participant }}
+      {% endfor %}
     </label>
     <label>
       Date:
-      <input
-        type="datetime-local"
-        name="expense_date_input"
-      />
-      <input type="hidden" name="expense_date" value="0" />
+      <input type="datetime-local" name="expense_date_input" />
+      <input type="hidden" name="expense_date" value="{{ timestamp }}" />
     </label>
-    <input type="submit" value="Enregistrer" />
+    <input type="submit" value="{{ submitText }}" />
   </form>
 </article>
+{% endmacro %}

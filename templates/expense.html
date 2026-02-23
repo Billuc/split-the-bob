@@ -1,0 +1,17 @@
+{% decl timestamp %}
+{% match expense.expense_date.duration_since(SystemTime::UNIX_EPOCH) %}
+{% when Ok with (duration) %}
+{% let timestamp = duration.as_secs_f32() %}
+{% else %}
+{% let timestamp = 0.0 %}
+{% endmatch %}
+<dt>
+  <span class="expense-date-display" data-timestamp="{{ timestamp }}"></span> -
+  {{ expense.name }}
+  {{ scope::expense_form() }}
+</dt>
+<dd>
+  <span>{{ expense.payed_by }}</span> a payé
+  <span>{{ expense.amount }}{{ expense.currency }}</span> pour
+  <span>{{ expense.payed_for | join(", ") }}</span>
+</dd>

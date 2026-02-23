@@ -13,6 +13,16 @@
       <h1><a href="./">La Bobine</a></h1>
     </header>
 
-    <main id="main">{% block content %} {% endblock %}</main>
+    <main id="main">
+      {% if errors is defined %}
+        <div id="errors">
+          {% for error in errors %}
+          <p class="error">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %} {% endblock %}
+    </main>
   </body>
 </html>

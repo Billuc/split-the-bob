@@ -1,35 +1,37 @@
-{% extends "base.html" %} {% block title %}La Bobine - {{ split.description }}{%
-endblock %} {% block content %}
-<h2>{{ split.description }} {% include "share_split.html" %}</h2>
+{% extends "base.html" %}
+{% import "expense_form.html" as scope %}
 
-{% for error in errors %}
-<p class="error">{{ error }}</p>
-{% endfor %}
+{% block title %}La Bobine - {{ split.description }}{% endblock %}
 
-<div id="participants">
-  <h3>Participants</h3>
-  <ul>
-    {% for participant in split.participants %}
-    <li>{{ participant }}</li>
-    {% endfor %}
-  </ul>
-  {% include "new_participant_form.html" %}
-</div>
+{% block content %}
+  <h2>
+    {{ split.description }}
+    {% include "share_split.html" %}
+  </h2>
 
-<div id="expenses">
-  <h3>Dépenses</h3>
-  <dl>
-    {% for expense in expenses %} {% include "expense.html" %} {% endfor %}
-  </dl>
+  <div id="participants">
+    <h3>Participants</h3>
+    <ul>
+      {% for participant in split.participants %}<li>{{ participant }}</li>{% endfor %}
+    </ul>
+    {% include "new_participant_form.html" %}
+  </div>
 
-  {% include "new_expense_form.html" %}
-  <script src="./js/expense-date.js"></script>
-</div>
+  <div id="expenses">
+    <h3>Dépenses</h3>
+    <dl>
+      {% for expense in expenses %} {% include "expense.html" %} {% endfor %}
+    </dl>
+    {{ scope::expense_form() }}
+    <script src="./js/expense-date.js"></script>
+  </div>
 
-<div id="balances">
-  <h3>Soldes</h3>
-  <ul>
-    {% for balance in balances %} {% include "balance.html" %} {% endfor %}
-  </ul>
-</div>
+  <div id="balances">
+    <h3>Soldes</h3>
+    <ul>
+      {% for balance in balances %}
+        {% include "balance.html" %}
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

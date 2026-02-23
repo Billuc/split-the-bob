@@ -3,12 +3,6 @@
 {% block title %}La Bobine - Nouvelle Bobine{% endblock %}
 
 {% block content %}
-<div id="errors">
-  {% for error in errors %}
-  <p class="error">{{ error }}</p>
-  {% endfor %}
-</div>
-
 <form action="./splits/new#main" method="post" target="htmz">
   <label> Description: <input type="text" name="description" /> </label>
   <label>
