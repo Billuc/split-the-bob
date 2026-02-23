@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}SplitTheBob - New Split{% endblock %}
+{% block title %}La Bobine - Nouvelle Bobine{% endblock %}
 
 {% block content %}
 <div id="errors">
@@ -10,17 +10,17 @@
 </div>
 
 <form action="./splits/new#main" method="post" target="htmz">
-  <label> Split description: <input type="text" name="description" /> </label>
+  <label> Description: <input type="text" name="description" /> </label>
   <div>
     Participants:
-    <input name="participants[]" placeholder="Name" required />
-    <button type="button" id="add-participant">Add participant</button>
+    <input name="participants[]" placeholder="Nom" required />
+    <button type="button" id="add-participant">Ajouter un participant</button>
   </div>
   <label>
-    Default currency:
+    Devise par défaut:
     <input type="text" name="default_currency" value="USD" />
   </label>
-  <input type="submit" value="Create" />
+  <input type="submit" value="Créer" />
 </form>
 
 <script>
@@ -29,7 +29,7 @@
     addParticipantButton.addEventListener("click", () => {
       const input = document.createElement("input");
       input.name = "participants[]";
-      input.placeholder = "Name";
+      input.placeholder = "Nom";
       input.required = true;
       addParticipantButton.before(input);
     });
