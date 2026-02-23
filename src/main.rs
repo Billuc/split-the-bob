@@ -35,7 +35,7 @@ async fn main() {
     let state = State { db };
 
     let app = Router::new()
-        .route("/", get(index))
+        .route("/", get(|| index(vec![])))
         .nest("/splits", split_service())
         .nest("/expenses", expense_service())
         //         .layer(middleware::from_fn(full_page_middleware))
@@ -49,11 +49,6 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn index() -> Result<Html<String>, Error> {
-    let view = view::IndexView;
-    let html = view.render()?;
-    Ok(Html(html))
-}
 
 // async fn full_page_middleware(req: Request, next: Next) -> Response {
 //     let partial_response = next.run(req).await;

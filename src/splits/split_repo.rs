@@ -51,16 +51,16 @@ pub struct UpdateSplit {
 pub struct SplitRepo {}
 
 impl SplitRepo {
-    pub async fn get_all(db: &DB) -> Result<Vec<Split>, Error> {
-        let split_dtos: Vec<SplitDTO> = sqlx::query_as("SELECT * FROM splits")
-            .fetch_all(db.get_pool())
-            .await?;
+    // pub async fn get_all(db: &DB) -> Result<Vec<Split>, Error> {
+    //     let split_dtos: Vec<SplitDTO> = sqlx::query_as("SELECT * FROM splits")
+    //         .fetch_all(db.get_pool())
+    //         .await?;
 
-        Ok(split_dtos
-            .into_iter()
-            .map(|dto: SplitDTO| dto.into())
-            .collect())
-    }
+    //     Ok(split_dtos
+    //         .into_iter()
+    //         .map(|dto: SplitDTO| dto.into())
+    //         .collect())
+    // }
 
     pub async fn get_by_id(db: &DB, id: String) -> Result<Split, Error> {
         let dto: SplitDTO = sqlx::query_as("SELECT * FROM splits WHERE id = $1")
@@ -105,12 +105,12 @@ impl SplitRepo {
         Ok(())
     }
 
-    pub async fn delete(db: &DB, id: String) -> Result<(), Error> {
-        sqlx::query("DELETE FROM splits WHERE id = $1")
-            .bind(id)
-            .execute(db.get_pool())
-            .await?;
+    // pub async fn delete(db: &DB, id: String) -> Result<(), Error> {
+    //     sqlx::query("DELETE FROM splits WHERE id = $1")
+    //         .bind(id)
+    //         .execute(db.get_pool())
+    //         .await?;
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 }

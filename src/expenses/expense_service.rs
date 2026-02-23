@@ -11,6 +11,7 @@ use crate::axum_state::State;
 use crate::error::Error;
 use crate::expenses::expense::{Expense, SplitMethod};
 use crate::expenses::expense_repo::ExpenseRepo;
+use crate::splits::split_view::get_split_view;
 
 pub fn expense_service() -> axum::Router<State> {
     Router::new()
@@ -51,7 +52,9 @@ pub async fn add_expense(
     let response = match ExpenseRepo::create(&state.db, new_expense).await {
         Err(error) => {
             eprintln!("Error creating expense: {:?}", error);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
+            get_split_view(&state.db, form.split_id.clone(), vec![error])
+                .await?
+                .into_response()
         }
         Ok(()) => {
             println!("Created expense for split {}", form.split_id);
@@ -100,7 +103,9 @@ pub async fn update_expense(
     let response = match ExpenseRepo::update(&state.db, updated_expense).await {
         Err(error) => {
             eprintln!("Error updating expense: {:?}", error);
-            (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
+            get_split_view(&state.db, form.split_id.clone(), vec![error])
+                .await?
+                .into_response()
         }
         Ok(()) => {
             println!("Updated expense {} for split {}", form.id, form.split_id);

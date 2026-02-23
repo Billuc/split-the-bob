@@ -1,18 +1,9 @@
-{% extends "base.html" %} {% block content %}
-<div>
-  <a 
-    href="./splits/new#main" 
-    target="htmz" 
-    class="link-action" 
-    style="margin-bottom: 1rem;"
-  >
-    Nouvelle bobine
-  </a>
-</div>
-<div>
-  <form action="./splits#main" target="htmz">
-    <label> Code de la bobine: <input type="text" name="split_id" /> </label>
-    <input type="submit" value="Rejoindre une bobine" />
-  </form>
-</div>
+{% extends "base.html" %} 
+
+{% block content %} 
+{% include "components/new_split.html" %}
+<form action="./splits#main" target="htmz">
+  <label> Code de la bobine: <input type="text" name="split_id" /> </label>
+  <input type="submit" value="Rejoindre une bobine" />
+</form>
 {% endblock %}

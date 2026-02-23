@@ -1,0 +1,24 @@
+<button
+  style="margin-bottom: 1rem"
+  id="new-split-button"
+  popovertarget="new-split"
+>
+  Nouvelle bobine
+</button>
+<article popover id="new-split">
+  <form action="./splits/new#main" method="post" target="htmz">
+    <label> Description: <input type="text" name="description" /> </label>
+    <label>
+      Participants:
+      <input type="text" name="participants[]" placeholder="Nom" required />
+      <button type="button" id="add-participant">Ajouter un participant</button>
+    </label>
+    <label>
+      Devise par défaut:
+      <input type="text" name="default_currency" value="USD" />
+    </label>
+    <input type="submit" value="Créer" />
+  </form>
+
+  <script src="./js/new-split.js"></script>
+</article>

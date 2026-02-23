@@ -99,16 +99,16 @@ impl Into<SplitMethod> for SplitMethodDTO {
 pub struct ExpenseRepo {}
 
 impl ExpenseRepo {
-    pub async fn get_all(db: &DB) -> Result<Vec<Expense>, Error> {
-        let expense_dtos: Vec<ExpenseDTO> = sqlx::query_as("SELECT * FROM expenses")
-            .fetch_all(db.get_pool())
-            .await?;
+    // pub async fn get_all(db: &DB) -> Result<Vec<Expense>, Error> {
+    //     let expense_dtos: Vec<ExpenseDTO> = sqlx::query_as("SELECT * FROM expenses")
+    //         .fetch_all(db.get_pool())
+    //         .await?;
 
-        Ok(expense_dtos
-            .into_iter()
-            .map(|dto: ExpenseDTO| dto.into())
-            .collect())
-    }
+    //     Ok(expense_dtos
+    //         .into_iter()
+    //         .map(|dto: ExpenseDTO| dto.into())
+    //         .collect())
+    // }
 
     pub async fn get_for_split(db: &DB, split_id: &str) -> Result<Vec<Expense>, Error> {
         let expense_dtos: Vec<ExpenseDTO> =

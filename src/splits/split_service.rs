@@ -7,18 +7,15 @@ use axum::{
 };
 use axum_extra::extract::Form;
 
-use crate::{axum_state::State, balances::balance::balances_from_expenses, splits::split_repo::{CreateSplit, UpdateSplit}};
-use crate::db::DB;
+use crate::{axum_state::State, splits::split_repo::{CreateSplit, UpdateSplit}, view::{IndexView, index}};
 use crate::error::Error;
-use crate::expenses::expense_repo::ExpenseRepo;
 use crate::splits::split_repo::SplitRepo;
-use crate::splits::split_view;
+use crate::splits::split_view::get_split_view;
 
 pub fn split_service() -> axum::Router<State> {
     Router::new()
         .route("/", get(show_split))
         .route("/", post(update_split))
-        .route("/new", get(new_split_form))
         .route("/new", post(create_split))
 }
 
@@ -55,7 +52,7 @@ pub async fn create_split(
     let response = match SplitRepo::create(&state.db, new_split).await {
         Err(error) => {
             eprintln!("Error creating split: {:?}", error);
-            new_split_view(vec![error]).into_response()
+            index(vec![error]).await?.into_response()
         }
         Ok(id) => {
             println!("Created split with id {}", id);
@@ -105,27 +102,4 @@ pub async fn update_split(
     Ok(response)
 }
 
-pub async fn new_split_form() -> Result<impl IntoResponse, Error> {
-    new_split_view(vec![])
-}
 
-async fn get_split_view(db: &DB, id: String, errors: Vec<Error>) -> Result<Html<String>, Error> {
-    let split = SplitRepo::get_by_id(db, id).await?;
-    let expenses = ExpenseRepo::get_for_split(db, &split.id).await?;
-    let balances = balances_from_expenses(&expenses, split.default_currency.clone());
-
-    let template = split_view::SplitView {
-        split,
-        expenses,
-        balances,
-        errors,
-    };
-    let view = template.render()?;
-    Ok(view.into())
-}
-
-fn new_split_view(errors: Vec<Error>) -> Result<Html<String>, Error> {
-    let template = split_view::NewSplitView { errors };
-    let view = template.render()?;
-    Ok(view.into())
-}
