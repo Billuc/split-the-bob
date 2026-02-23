@@ -1,11 +1,33 @@
 {% extends "base.html" %} {% block title %}La Bobine - {{ split.description }}{%
-endblock %} {% block content %} {% for error in errors %}
+endblock %} {% block content %}
+<h2>{{ split.description }}</h2>
+{% for error in errors %}
 <p class="error">{{ error }}</p>
 {% endfor %}
 <div>
-  <h3>Split code: 1234</h3>
-  <p>Share this code with your friends to let them join the split.</p>
+  <h3>Code de la bobine: {{ split.id }}</h3>
+  <p>
+    Partagez ce code avec vos amis pour leur permettre de rejoindre la bobine.
+  </p>
+  <p>Sinon, vous pouvez aussi utiliser ce lien: <a id="split-link"></a></p>
 </div>
+
+<script>
+    const splitLink = document.getElementById("split-link");
+    splitLink.innerHTML = window.location.href;
+    splitLink.href = window.location.href;
+    splitLink.addEventListener("click", () => {
+      navigator.clipboard
+        .writeText(window.location.href)
+        .then(() => {
+          alert("Lien copié dans le presse-papiers !");
+        })
+        .catch((err) => {
+          console.error("Erreur lors de la copie du lien : ", err);
+        });
+    });
+</script>
+
 <div>
   <h3>Participants</h3>
   <ul>
@@ -63,8 +85,8 @@ endblock %} {% block content %} {% for error in errors %}
   <ul>
     {% for balance in balances %}
     <li>
-      {{ balance.debtor }} doit {{ balance.amount | fmt("{:.2}") }}{{ balance.currency }} à {{
-      balance.creditor }}
+      {{ balance.debtor }} doit {{ balance.amount | fmt("{:.2}") }}{{
+      balance.currency }} à {{ balance.creditor }}
     </li>
     {% endfor %}
   </ul>
