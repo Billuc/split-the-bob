@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% import "expense_form.html" as scope %}
 
 {% block title %}La Bobine - {{ split.description }}{% endblock %}
 
 {% block content %}
   <h2>
     {{ split.description }}
-    {% include "share_split.html" %}
+    {% include "components/share_split.html" %}
   </h2>
 
   <div id="participants">
@@ -14,15 +13,15 @@
     <ul>
       {% for participant in split.participants %}<li>{{ participant }}</li>{% endfor %}
     </ul>
-    {% include "new_participant_form.html" %}
+    {% include "components/new_participant_form.html" %}
   </div>
 
   <div id="expenses">
     <h3>Dépenses</h3>
     <dl>
-      {% for expense in expenses %} {% include "expense.html" %} {% endfor %}
+      {% for expense in expenses %} {% include "components/expense.html" %} {% endfor %}
     </dl>
-    {{ scope::expense_form() }}
+    {% include "components/expense_form.html" %}
     <script src="./js/expense-date.js"></script>
   </div>
 
@@ -30,7 +29,7 @@
     <h3>Soldes</h3>
     <ul>
       {% for balance in balances %}
-        {% include "balance.html" %}
+        {% include "components/balance.html" %}
       {% endfor %}
     </ul>
   </div>
