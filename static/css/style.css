@@ -1,5 +1,145 @@
-#add-expense-form {
+:root {
+  --primary: #fca311;
+  --secondary: #14213d;
+  --background: #ffffff;
+  --background-2: #e5e5e5;
+  --text: #000000;
+  --border-radius: 0.5rem;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+main {
+  text-align: center;
+  margin-inline: auto;
+  padding: 2rem;
+}
+
+header {
   display: flex;
-  flex-direction: column;
-  align-items: start;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--secondary);
+  color: var(--background-2);
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header h1 a {
+  color: var(--background-2);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+input[type="submit"], button, .link-action {
+  background-color: var(--primary);
+  color: var(--text);
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+}
+
+input:not([type="submit"]), select {
+  padding: 0.25rem;
+  background-color: var(--background);
+  border: 1px solid var(--background-2);
+  border-radius: var(--border-radius);
+}
+
+input:not([type="submit"]):focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 5px var(--primary);
+}
+
+input:not([type="submit"]):hover, select:hover {
+  background-color: var(--background-2);
+}
+
+select, ::picker(select) {
+  appearance: base-select;
+  border-radius: var(--border-radius);
+  font-weight: normal;
+  font-size: small;
+}
+
+::picker(select) {
+  background-color: var(--primary);
+  top: calc(anchor(bottom) + 1px);
+}
+
+h2 {
+  margin: 0.5rem 0;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+ul {
+  width: fit-content;
+  padding-inline-start: 20px;
+  margin: 0.5rem auto;
+}
+
+dl {
+  width: fit-content;
+  margin: 0.5rem auto;
+  text-align: start;
+}
+
+dt {
+  font-weight: bold;
+  margin: 0.5rem 0 0.25rem;
+}
+
+dd, #balances li {
+  color: color-mix(in oklab, var(--text) 70%, transparent);
+}
+dd span, #balances li span {
+  color: var(--text);
+  padding: 0.25rem;
+}
+
+.error {
+  color: red;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+article[popover] {
+  background-color: var(--background);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  max-width: min(90vw, 800px);
+  box-sizing: border-box;
+  font-size: medium;
+  font-weight: normal;
+}
+
+article[popover]::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+button.ghost {
+  background: var(--background-2);
 }

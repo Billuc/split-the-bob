@@ -2,7 +2,7 @@
 - [x] Add participant to splitz
 - [x] Translate 
 - [x] Share splitz
-- [ ] Style forms
+- [x] Style forms
 - [ ] Handle different currencies with auto conversion
     - https://www.exchangerate-api.com/docs/pair-conversion-requests
     - https://www.exchangerate-api.com/docs/supported-currencies

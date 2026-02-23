@@ -11,11 +11,11 @@
 
 <form action="./splits/new#main" method="post" target="htmz">
   <label> Description: <input type="text" name="description" /> </label>
-  <div>
+  <label>
     Participants:
-    <input name="participants[]" placeholder="Nom" required />
+    <input type="text" name="participants[]" placeholder="Nom" required />
     <button type="button" id="add-participant">Ajouter un participant</button>
-  </div>
+  </label>
   <label>
     Devise par défaut:
     <input type="text" name="default_currency" value="USD" />
@@ -23,16 +23,5 @@
   <input type="submit" value="Créer" />
 </form>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const addParticipantButton = document.getElementById("add-participant");
-    addParticipantButton.addEventListener("click", () => {
-      const input = document.createElement("input");
-      input.name = "participants[]";
-      input.placeholder = "Nom";
-      input.required = true;
-      addParticipantButton.before(input);
-    });
-  });
-</script>
+<script src="./js/new-split.js"></script>
 {% endblock %}

@@ -31,20 +31,20 @@
     </label>
     <label>
       Réparti entre: {% for participant in split.participants %}
-      <input
-        type="checkbox"
-        name="payed_for[]"
-        value="{{ participant }}"
-        checked
-      />
-      {{ participant }} {% endfor %}
+      <label>
+        <input
+          type="checkbox"
+          name="payed_for[]"
+          value="{{ participant }}"
+          checked
+        />
+        {{ participant }}
+      </label>
+      {% endfor %}
     </label>
     <label>
       Date:
-      <input
-        type="datetime-local"
-        name="expense_date_input"
-      />
+      <input type="datetime-local" name="expense_date_input" />
       <input type="hidden" name="expense_date" value="0" />
     </label>
     <input type="submit" value="Ajouter la dépense" />
