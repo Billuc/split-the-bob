@@ -18,11 +18,23 @@ for (const input of expenseDateValues) {
     if (isNaN(timestamp)) { continue; }
 
     const date = new Date(timestamp * 1000);
-    const datetimeLocalValue = date.toLocaleDateString("en-US") + "T" + date.toLocaleTimeString("en-US", { hour12: false });
     const expenseDateInput = input.parentElement.querySelector("input[name='expense_date_input']");
 
     if (!expenseDateInput) { continue; }
-    expenseDateInput.value = datetimeLocalValue;
+    expenseDateInput.value = toLocaleISOString(date);
+}
+
+/**
+ * 
+ * @param {Date} date 
+ */
+function toLocaleISOString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 document
