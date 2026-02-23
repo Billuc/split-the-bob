@@ -812,6 +812,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6373607a59f0be73a39b6fe456b8192fcc3585f602af20751600e974dd455e77"
 
 [[package]]
+name = "loadenv"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25a30d199872b1144f39cc1900cc6130ebc74d6451e4184b73f77704d6ca2c30"
+
+[[package]]
 name = "lock_api"
 version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1300,6 +1306,7 @@ dependencies = [
  "askama",
  "axum",
  "axum-extra",
+ "loadenv",
  "serde",
  "sqlx",
  "tokio",

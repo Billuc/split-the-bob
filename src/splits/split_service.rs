@@ -7,7 +7,7 @@ use axum::{
 };
 use axum_extra::extract::Form;
 
-use crate::{axum_state::State, balances::balance::balances_from_expenses};
+use crate::{axum_state::State, balances::balance::balances_from_expenses, splits::split_repo::{CreateSplit, UpdateSplit}};
 use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense_repo::ExpenseRepo;
@@ -18,12 +18,13 @@ use crate::splits::split_view;
 pub fn split_service() -> axum::Router<State> {
     Router::new()
         .route("/", get(show_split))
+        .route("/", post(update_split))
         .route("/new", get(new_split_form))
         .route("/new", post(create_split))
 }
 
 #[derive(serde::Deserialize)]
-struct SplitQuery {
+pub struct SplitQuery {
     split_id: String,
 }
 
@@ -31,11 +32,11 @@ async fn show_split(
     extract::State(state): extract::State<State>,
     extract::Query(query): extract::Query<SplitQuery>,
 ) -> Result<impl IntoResponse, Error> {
-    get_split_view(&state.db, query.split_id).await
+    get_split_view(&state.db, query.split_id, vec![]).await
 }
 
 #[derive(serde::Deserialize)]
-struct CreateSplitForm {
+pub struct CreateSplitForm {
     description: String,
     #[serde(rename = "participants[]")]
     participants: Vec<String>,
@@ -46,11 +47,10 @@ pub async fn create_split(
     extract::State(state): extract::State<State>,
     Form(form): Form<CreateSplitForm>,
 ) -> Result<Response, Error> {
-    let new_split = Split {
-        id: String::new(),
-        description: form.description.clone(),
-        usernames: form.participants.clone(),
-        default_currency: form.default_currency.clone(),
+    let new_split = CreateSplit {
+        description: form.description,
+        participants: form.participants,
+        default_currency: form.default_currency,
     };
 
     let response = match SplitRepo::create(&state.db, new_split).await {
@@ -71,11 +71,46 @@ pub async fn create_split(
     Ok(response)
 }
 
+
+#[derive(serde::Deserialize)]
+pub struct UpdateSplitForm {
+    split_id: String,
+    description: Option<String>,
+    #[serde(rename = "participants[]")]
+    participants: Option<Vec<String>>,
+    default_currency: Option<String>,
+}
+
+pub async fn update_split(
+    extract::State(state): extract::State<State>,
+    Form(form): Form<UpdateSplitForm>,
+) -> Result<Response, Error> {
+    let updated_split = UpdateSplit {
+        id: form.split_id.clone(),
+        description: form.description,
+        participants: form.participants,
+        default_currency: form.default_currency,
+    };
+
+    let response = match SplitRepo::update(&state.db, updated_split).await {
+        Err(error) => {
+            eprintln!("Error updating split: {:?}", error);
+            get_split_view(&state.db, form.split_id.clone(), vec![error]).await?.into_response()
+        }
+        Ok(_) => {
+            println!("Updated split with id {}", form.split_id.clone());
+            get_split_view(&state.db, form.split_id.clone(), vec![]).await?.into_response()
+        }
+    };
+
+    Ok(response)
+}
+
 pub async fn new_split_form() -> Result<impl IntoResponse, Error> {
     new_split_view(vec![])
 }
 
-async fn get_split_view(db: &DB, id: String) -> Result<Html<String>, Error> {
+async fn get_split_view(db: &DB, id: String, errors: Vec<Error>) -> Result<Html<String>, Error> {
     let split = SplitRepo::get_by_id(db, id).await?;
     let expenses = ExpenseRepo::get_for_split(db, &split.id).await?;
     let balances = balances_from_expenses(&expenses, split.default_currency.clone());
@@ -84,6 +119,7 @@ async fn get_split_view(db: &DB, id: String) -> Result<Html<String>, Error> {
         split,
         expenses,
         balances,
+        errors,
     };
     let view = template.render()?;
     Ok(view.into())

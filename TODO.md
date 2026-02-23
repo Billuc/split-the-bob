@@ -1,6 +1,8 @@
-- [ ] Calculate balances
-- [ ] Add participant to splitz
-- [ ] Translate 
+- [x] Calculate balances
+- [x] Add participant to splitz
+- [x] Translate 
 - [ ] Share splitz
 - [ ] Style forms
 - [ ] Handle different currencies
+- [ ] IDs from nouns and adjectives
+- [ ] Avoid duplicate participants

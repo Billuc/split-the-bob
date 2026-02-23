@@ -26,4 +26,6 @@ target
 /target
 
 # Custom ignore rules
-stb.data
+*.data
+*.sqlite
+

@@ -1,7 +1,4 @@
-use crate::expenses::{
-    self,
-    expense::{self, Expense},
-};
+use crate::expenses::expense::{self, Expense};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]

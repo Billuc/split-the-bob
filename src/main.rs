@@ -1,9 +1,7 @@
 use askama::Template;
 use axum::{
     Router,
-    extract::Request,
-    middleware::{self, Next},
-    response::{Html, Response},
+    response::Html,
     routing::get,
 };
 use std::env;
@@ -25,8 +23,11 @@ mod view;
 
 #[tokio::main]
 async fn main() {
+    loadenv::load().unwrap();
     let port = env::var("PORT").unwrap_or_else(|_| "1221".to_string());
     let db_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite://stb.data".to_string());
+
+    println!("Using database URL: {}", db_url);
 
     let static_files = ServeDir::new("./static");
     let db = DB::new(&db_url).await.unwrap();

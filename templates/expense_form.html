@@ -13,7 +13,7 @@
     <label>
       Payé par: 
       <select name="payed_by">
-        {% for participant in split.usernames %}
+        {% for participant in split.participants %}
         {% let selected = participant == &expense.payed_by %}
         <option 
             value="{{ participant }}"
@@ -23,7 +23,7 @@
       </select>
     </label>
     <label>
-      Reparti entre: {% for participant in split.usernames %}
+      Reparti entre: {% for participant in split.participants %}
       {% let checked = expense.payed_for.contains(participant) %}
       <input
         type="checkbox"

@@ -24,13 +24,13 @@
     <label>
       Payé par:
       <select name="payed_by">
-        {% for participant in split.usernames %}
+        {% for participant in split.participants %}
         <option value="{{ participant }}">{{ participant }}</option>
         {% endfor %}
       </select>
     </label>
     <label>
-      Réparti entre: {% for participant in split.usernames %}
+      Réparti entre: {% for participant in split.participants %}
       <input
         type="checkbox"
         name="payed_for[]"
@@ -48,6 +48,6 @@
       />
       <input type="hidden" name="expense_date" id="expense_date" value="0" />
     </label>
-    <input type="submit" value="Add expense" />
+    <input type="submit" value="Ajouter la dépense" />
   </form>
 </article>

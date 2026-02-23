@@ -1,5 +1,7 @@
-{% extends "base.html" %} {% block title %}La Bobine - {{ split.description
-}}{% endblock %} {% block content %}
+{% extends "base.html" %} {% block title %}La Bobine - {{ split.description }}{%
+endblock %} {% block content %} {% for error in errors %}
+<p class="error">{{ error }}</p>
+{% endfor %}
 <div>
   <h3>Split code: 1234</h3>
   <p>Share this code with your friends to let them join the split.</p>
@@ -7,10 +9,11 @@
 <div>
   <h3>Participants</h3>
   <ul>
-    {% for participant in split.usernames %}
+    {% for participant in split.participants %}
     <li>{{ participant }}</li>
     {% endfor %}
   </ul>
+  {% include "new_participant_form.html" %}
 </div>
 <div id="expenses">
   <h3>Dépenses</h3>
@@ -40,7 +43,7 @@
   </script>
 
   {% include "new_expense_form.html" %}
-  
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document
@@ -60,7 +63,7 @@
   <ul>
     {% for balance in balances %}
     <li>
-      {{ balance.debtor }} doit {{ balance.amount }}{{ balance.currency }} à {{
+      {{ balance.debtor }} doit {{ balance.amount | fmt("{:.2}") }}{{ balance.currency }} à {{
       balance.creditor }}
     </li>
     {% endfor %}

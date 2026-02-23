@@ -1,4 +1,3 @@
-use askama::Template;
 use axum::{
     Router, extract,
     http::StatusCode,
@@ -9,12 +8,9 @@ use axum_extra::extract::Form;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use crate::axum_state::State;
-use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense::{Expense, SplitMethod};
 use crate::expenses::expense_repo::ExpenseRepo;
-use crate::splits::split_repo::SplitRepo;
-use crate::splits::split_view;
 
 pub fn expense_service() -> axum::Router<State> {
     Router::new()
@@ -23,7 +19,7 @@ pub fn expense_service() -> axum::Router<State> {
 }
 
 #[derive(serde::Deserialize)]
-struct AddExpenseForm {
+pub struct AddExpenseForm {
     split_id: String,
     name: String,
     amount: f32,
@@ -71,7 +67,7 @@ pub async fn add_expense(
 }
 
 #[derive(serde::Deserialize)]
-struct UpdateExpenseForm {
+pub struct UpdateExpenseForm {
     id: i64,
     split_id: String,
     name: String,

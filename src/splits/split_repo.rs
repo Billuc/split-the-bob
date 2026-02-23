@@ -8,7 +8,7 @@ use crate::splits::split::Split;
 struct SplitDTO {
     id: String,
     description: String,
-    usernames: String,
+    participants: String,
     default_currency: String,
 }
 
@@ -17,7 +17,7 @@ impl From<Split> for SplitDTO {
         SplitDTO {
             id: split.id,
             description: split.description,
-            usernames: split.usernames.join(","),
+            participants: split.participants.join(","),
             default_currency: split.default_currency,
         }
     }
@@ -28,10 +28,23 @@ impl Into<Split> for SplitDTO {
         Split {
             id: self.id,
             description: self.description,
-            usernames: self.usernames.split(",").map(|s| s.to_string()).collect(),
+            participants: self.participants.split(",").map(|s| s.to_string()).collect(),
             default_currency: self.default_currency,
         }
     }
+}
+
+pub struct CreateSplit {
+    pub description: String,
+    pub participants: Vec<String>,
+    pub default_currency: String,
+}
+
+pub struct UpdateSplit {
+    pub id: String,
+    pub description: Option<String>,
+    pub participants: Option<Vec<String>>,
+    pub default_currency: Option<String>,
 }
 
 pub struct SplitRepo {}
@@ -49,7 +62,7 @@ impl SplitRepo {
     }
 
     pub async fn get_by_id(db: &DB, id: String) -> Result<Split, Error> {
-        let dto: SplitDTO = sqlx::query_as("SELECT * FROM splits WHERE id = ?")
+        let dto: SplitDTO = sqlx::query_as("SELECT * FROM splits WHERE id = $1")
             .bind(id)
             .fetch_one(db.get_pool())
             .await?;
@@ -57,29 +70,34 @@ impl SplitRepo {
         Ok(dto.into())
     }
 
-    pub async fn create(db: &DB, split: Split) -> Result<String, Error> {
-        let dto: SplitDTO = split.into();
+    pub async fn create(db: &DB, split: CreateSplit) -> Result<String, Error> {
         let id = Self::generate_id();
 
         sqlx::query(
-            "INSERT INTO splits (id, description, usernames, default_currency) VALUES (?, ?, ?, ?)",
+            "INSERT INTO splits (id, description, participants, default_currency) VALUES ($1, $2, $3, $4)",
         )
         .bind(id.clone())
-        .bind(dto.description)
-        .bind(dto.usernames)
-        .bind(dto.default_currency)
+        .bind(split.description)
+        .bind(split.participants.join(","))
+        .bind(split.default_currency)
         .execute(db.get_pool())
         .await?;
 
         Ok(id)
     }
 
-    pub async fn update(db: &DB, split: Split) -> Result<(), Error> {
-        let dto: SplitDTO = split.into();
-        sqlx::query("UPDATE splits SET description = ?, usernames = ? WHERE id = ?")
-            .bind(dto.description)
-            .bind(dto.usernames)
-            .bind(dto.id)
+    pub async fn update(db: &DB, split: UpdateSplit) -> Result<(), Error> {
+        sqlx::query(r#"
+        UPDATE splits 
+        SET description = COALESCE($1, description),
+            participants = COALESCE($2, participants), 
+            default_currency = COALESCE($3, default_currency)
+        WHERE id = $4
+        "#)
+            .bind(split.description)
+            .bind(split.participants.map(|p| p.join(",")))
+            .bind(split.default_currency)
+            .bind(split.id)
             .execute(db.get_pool())
             .await?;
 
@@ -87,7 +105,7 @@ impl SplitRepo {
     }
 
     pub async fn delete(db: &DB, id: String) -> Result<(), Error> {
-        sqlx::query("DELETE FROM splits WHERE id = ?")
+        sqlx::query("DELETE FROM splits WHERE id = $1")
             .bind(id)
             .execute(db.get_pool())
             .await?;
