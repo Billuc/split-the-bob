@@ -1,22 +1,26 @@
+#[derive(Debug)]
 struct Noun {
     word: String,
     gender: String,
 }
 
+#[derive(Debug)]
 struct Adjective {
     masculine: String,
     feminine: String,
 }
 const NOUNS: &str = include_str!("nouns.csv");
 const ADJECTIVES: &str = include_str!("adjectives.csv");
+const NUMBER_OF_PAIRS: usize = 2;
+const NUMBER_OF_WORDS: usize = 512;
 
 lazy_static::lazy_static! {
     pub static ref KEY_GENERATOR: KeyGenerator = KeyGenerator::new();
 }
 
 pub struct KeyGenerator {
-    nouns: Vec<Noun>,
-    adjectives: Vec<Adjective>,
+    nouns: [Noun; NUMBER_OF_WORDS],
+    adjectives: [Adjective; NUMBER_OF_WORDS],
 }
 
 impl KeyGenerator {
@@ -31,7 +35,9 @@ impl KeyGenerator {
                         gender: parts[1].to_string(),
                     }
                 })
-                .collect::<Vec<Noun>>(),
+                .collect::<Vec<Noun>>()
+                .try_into()
+                .unwrap(),
             adjectives: ADJECTIVES
                 .lines()
                 .map(|s: &str| {
@@ -41,35 +47,34 @@ impl KeyGenerator {
                         feminine: parts[1].to_string(),
                     }
                 })
-                .collect::<Vec<Adjective>>(),
+                .collect::<Vec<Adjective>>()
+                .try_into()
+                .unwrap(),
         }
     }
 
     pub fn generate_key(&self) -> String {
-        let indices = rand::random::<(u8, u8, u8, u8)>();
+        let mut indices_iter = rand::random_iter::<u16>();
         let mut key = String::new();
 
-        let noun1 = &self.nouns[indices.0 as usize % self.nouns.len()];
-        let adjective1 = &self.adjectives[indices.1 as usize % self.adjectives.len()];
-        let noun2 = &self.nouns[indices.2 as usize % self.nouns.len()];
-        let adjective2 = &self.adjectives[indices.3 as usize % self.adjectives.len()];
+        for _ in 0..NUMBER_OF_PAIRS {
+            let noun_index = indices_iter.next().unwrap() as usize % NUMBER_OF_WORDS;
+            let adjective_index = indices_iter.next().unwrap() as usize % NUMBER_OF_WORDS;
 
-        key.push_str(&noun1.word);
-        key.push('-');
-        if noun1.gender == "f" {
-            key.push_str(&adjective1.feminine);
-        } else {
-            key.push_str(&adjective1.masculine);
-        }
-        key.push('-');
-        key.push_str(&noun2.word);
-        key.push('-');
-        if noun2.gender == "f" {
-            key.push_str(&adjective2.feminine);
-        } else {
-            key.push_str(&adjective2.masculine);
+            let noun = &self.nouns[noun_index];
+            let adjective = &self.adjectives[adjective_index];
+
+            key.push_str(&noun.word);
+            key.push('-');
+            if noun.gender == "f" {
+                key.push_str(&adjective.feminine);
+            } else {
+                key.push_str(&adjective.masculine);
+            }
+            key.push('-');
         }
 
+        key.pop(); // Remove the trailing '-'
         key
     }
 }

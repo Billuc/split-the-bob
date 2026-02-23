@@ -1,7 +1,7 @@
 - [x] Calculate balances
 - [x] Add participant to splitz
 - [x] Translate 
-- [ ] Share splitz
+- [x] Share splitz
 - [ ] Style forms
 - [ ] Handle different currencies with auto conversion
     - https://www.exchangerate-api.com/docs/pair-conversion-requests

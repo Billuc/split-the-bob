@@ -12,21 +12,7 @@ endblock %} {% block content %}
   <p>Sinon, vous pouvez aussi utiliser ce lien: <a id="split-link"></a></p>
 </div>
 
-<script>
-    const splitLink = document.getElementById("split-link");
-    splitLink.innerHTML = window.location.href;
-    splitLink.href = window.location.href;
-    splitLink.addEventListener("click", () => {
-      navigator.clipboard
-        .writeText(window.location.href)
-        .then(() => {
-          alert("Lien copié dans le presse-papiers !");
-        })
-        .catch((err) => {
-          console.error("Erreur lors de la copie du lien : ", err);
-        });
-    });
-</script>
+<script src="./js/split-link.js"></script>
 
 <div>
   <h3>Participants</h3>
@@ -45,41 +31,16 @@ endblock %} {% block content %}
     with (duration) %} {% let timestamp = duration.as_secs_f32() %} {% else %}
     {% let timestamp = 0.0 %} {% endmatch %}
     <li>
-      <span class="expense-date" data-timestamp="{{ timestamp }}"></span> -
+      <span class="expense-date-display" data-timestamp="{{ timestamp }}"></span> -
       {{expense.name }} - {{ expense.payed_by }} a payé {{ expense.amount }}{{
       expense.currency }} pour {{ expense.payed_for | join(", ") }}
     </li>
     {% include "expense_form.html" %} {% endfor %}
   </ul>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const expenseDates = document.querySelectorAll(".expense-date");
-      for (const span of expenseDates) {
-        const timestamp = parseFloat(span.getAttribute("data-timestamp"));
-        if (!isNaN(timestamp)) {
-          const date = new Date(timestamp * 1000);
-          span.textContent = date.toLocaleString();
-        }
-      }
-    });
-  </script>
-
+  
   {% include "new_expense_form.html" %}
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      document
-        .getElementById("expense_date_display")
-        .addEventListener("change", function (e) {
-          const dateValue = e.target.value;
-          if (dateValue) {
-            // Convert datetime-local (YYYY-MM-DDTHH:mm) to Unix timestamp in seconds
-            const timestamp = Date.parse(dateValue) / 1000;
-            document.getElementById("expense_date").value = timestamp;
-          }
-        });
-    });
-  </script>
+  <script src="./js/expense-date.js"></script>
 
   <h3>Soldes</h3>
   <ul>
