@@ -3,8 +3,17 @@
 - [x] Translate 
 - [x] Share splitz
 - [x] Style forms
-- [ ] Handle different currencies with auto conversion
+- [x] Handle different currencies with auto conversion
     - https://www.exchangerate-api.com/docs/pair-conversion-requests
     - https://www.exchangerate-api.com/docs/supported-currencies
 - [x] IDs from nouns and adjectives
 - [ ] Avoid duplicate participants
+- [ ] Better error handling in split_service (see expense_service)
+- [ ] Expense deletion
+- [ ] Split deletion
+- [ ] Save joined splits in localStorage
+- [ ] Show balance per participant
+- [ ] Add more split methods
+    - [ ] Split by amount
+    - [ ] Split by percentage
+- [ ] Review balance algorithm to limit number of required operations
