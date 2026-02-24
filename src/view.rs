@@ -1,4 +1,5 @@
 use askama::Template;
+use axum::response::Html;
 
 use crate::error::Error;
 

@@ -12,6 +12,7 @@ use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense_service::expense_service;
 use crate::splits::split_service::split_service;
+use crate::view::index;
 
 mod axum_state;
 mod balances;

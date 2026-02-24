@@ -52,7 +52,8 @@ pub async fn create_split(
     let response = match SplitRepo::create(&state.db, new_split).await {
         Err(error) => {
             eprintln!("Error creating split: {:?}", error);
-            index(vec![error]).await?.into_response()
+            let html: Html<String> = index(vec![error]).await?;
+            html.into_response()
         }
         Ok(id) => {
             println!("Created split with id {}", id);
