@@ -28,4 +28,4 @@ target
 # Custom ignore rules
 *.data
 *.sqlite
-
+.env
