@@ -36,6 +36,27 @@ pub async fn add_expense(
     extract::State(state): extract::State<State>,
     Form(form): Form<AddExpenseForm>,
 ) -> Result<Response, Error> {
+    let result = try_add_expense(&state, &form).await;
+
+    let response = match result {
+        Err(error) => {
+            eprintln!("Error creating expense: {:?}", error);
+            get_split_view(&state.db, form.split_id.clone(), vec![error])
+                .await?
+                .into_response()
+        }
+        Ok(()) => {
+            println!("Created expense for split {}", form.split_id);
+            get_split_view(&state.db, form.split_id.clone(), vec![])
+                .await?
+                .into_response()
+        }
+    };
+
+    Ok(response)
+}
+
+async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Error> {
     let split = SplitRepo::get_by_id(&state.db, form.split_id.clone()).await?;
 
     let default_currency = currency::try_get_currency(&split.default_currency)?;
@@ -56,25 +77,9 @@ pub async fn add_expense(
         split_method: SplitMethod::Evenly,
     };
 
-    let response = match ExpenseRepo::create(&state.db, new_expense).await {
-        Err(error) => {
-            eprintln!("Error creating expense: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error])
-                .await?
-                .into_response()
-        }
-        Ok(()) => {
-            println!("Created expense for split {}", form.split_id);
-            (
-                StatusCode::SEE_OTHER,
-                [("Location", format!("/splits?split_id={}", form.split_id))],
-            )
-                .into_response()
-        }
-    };
-
-    Ok(response)
+    ExpenseRepo::create(&state.db, new_expense).await
 }
+
 
 #[derive(serde::Deserialize)]
 pub struct UpdateExpenseForm {
@@ -93,12 +98,39 @@ pub async fn update_expense(
     extract::State(state): extract::State<State>,
     Form(form): Form<UpdateExpenseForm>,
 ) -> Result<Response, Error> {
+    let result = try_update_expense(&state, &form).await;
+
+    let response = match result {
+        Err(error) => {
+            eprintln!("Error creating expense: {:?}", error);
+            get_split_view(&state.db, form.split_id.clone(), vec![error])
+                .await?
+                .into_response()
+        }
+        Ok(()) => {
+            println!("Created expense for split {}", form.split_id);
+            get_split_view(&state.db, form.split_id.clone(), vec![])
+                .await?
+                .into_response()
+        }
+    };
+
+    Ok(response)
+}
+
+async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(), Error> {
+    let split = SplitRepo::get_by_id(&state.db, form.split_id.clone()).await?;
+
+    let default_currency = currency::try_get_currency(&split.default_currency)?;
+    let expense_currency = currency::try_get_currency(&form.currency)?;
+    let default_currency_amount = currency::convert(form.amount, expense_currency, default_currency).await?;
+
     let updated_expense = Expense {
         id: form.id,
         split_id: form.split_id.clone(),
         name: form.name.clone(),
-        amount: form.amount,
-        currency: form.currency.clone(),
+        amount: default_currency_amount,
+        currency: split.default_currency.clone(),
         original_amount: form.amount,
         original_currency: form.currency.clone(),
         payed_by: form.payed_by.clone(),
@@ -107,24 +139,7 @@ pub async fn update_expense(
         split_method: SplitMethod::Evenly,
     };
 
-    let response = match ExpenseRepo::update(&state.db, updated_expense).await {
-        Err(error) => {
-            eprintln!("Error updating expense: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error])
-                .await?
-                .into_response()
-        }
-        Ok(()) => {
-            println!("Updated expense {} for split {}", form.id, form.split_id);
-            (
-                StatusCode::SEE_OTHER,
-                [("Location", format!("/splits?split_id={}", form.split_id))],
-            )
-                .into_response()
-        }
-    };
-
-    Ok(response)
+    ExpenseRepo::update(&state.db, updated_expense).await
 }
 
 fn system_time_from_timestamp(timestamp: f32) -> SystemTime {

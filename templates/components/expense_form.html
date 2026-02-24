@@ -39,11 +39,10 @@
   <form action="{{ action }}"
         target="htmz"
         method="post">
-    {% if expense is not defined %}
-      <input type="hidden" name="split_id" value="{{ split.id }}" />
-    {% else %}
-      <input type="hidden" name="id" value="{{ expenseId }}" />
+    {% if expense is defined %}
+    <input type="hidden" name="id" value="{{ expenseId }}" />
     {% endif %}
+    <input type="hidden" name="split_id" value="{{ split.id }}" />
     <label>
       Nom:
       <input type="text"
