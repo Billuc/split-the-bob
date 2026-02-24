@@ -12,7 +12,7 @@
   {% let submitText = "Enregistrer" %}
   {% let action = "./expenses/update#main" %}
   {% let expenseId = expense.id %}
-  {% let currency = expense.currency %}
+  {% let currency = expense.original_currency %}
   {% let payedBy = expense.payed_by %}
   {% let payedFor = expense.payed_for %}
   {% match expense.expense_date.duration_since(SystemTime::UNIX_EPOCH) %}
@@ -55,7 +55,7 @@
       Montant:
       <input type="number"
              name="amount"
-             {% if expense is defined %}value="{{ expense.amount }}"{% endif %}
+             {% if expense is defined %}value="{{ expense.original_amount }}"{% endif %}
              placeholder="Montant" />
     </label>
     <label>

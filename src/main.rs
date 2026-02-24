@@ -22,6 +22,7 @@ mod expenses;
 mod splits;
 mod view;
 mod keys;
+mod currencies;
 
 #[tokio::main]
 async fn main() {
