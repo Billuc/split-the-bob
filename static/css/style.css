@@ -4,6 +4,7 @@
   --background: #ffffff;
   --background-2: #e5e5e5;
   --text: #000000;
+  --text-2: hsl(221, 51%, 30%);
   --border-radius: 0.5rem;
 }
 
@@ -118,14 +119,23 @@ dl {
 dt {
   font-weight: bold;
   margin: 0.5rem 0 0.25rem;
+  color: var(--text-2);
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+dd {
+  margin-bottom: 1rem;
 }
 
 dd, #balances li {
-  color: color-mix(in oklab, var(--text) 70%, transparent);
+  color: color-mix(in oklab, var(--text) 50%, transparent);
+  font-size: small;
 }
 dd span, #balances li span {
   color: var(--text);
   padding: 0.25rem;
+  font-size: medium;
 }
 
 .error {
@@ -181,3 +191,11 @@ button.ghost {
     order: 0;
   }
 }
+
+.original-amount, .expense-date-display {
+  font-size: small;
+  opacity: 0.8;
+  padding: 0;
+}
+
+ 

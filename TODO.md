@@ -17,3 +17,5 @@
     - [ ] Split by amount
     - [ ] Split by percentage
 - [ ] Review balance algorithm to limit number of required operations
+- [ ] Select currency instead of type
+- [x] Show original amount and currency
