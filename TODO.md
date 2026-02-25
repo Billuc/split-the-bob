@@ -7,9 +7,9 @@
     - https://www.exchangerate-api.com/docs/pair-conversion-requests
     - https://www.exchangerate-api.com/docs/supported-currencies
 - [x] IDs from nouns and adjectives
-- [ ] Avoid duplicate participants
+- [x] Avoid duplicate participants
 - [ ] Better error handling in split_service (see expense_service)
-- [ ] Expense deletion
+- [x] Expense deletion
 - [ ] Split deletion
 - [ ] Save joined splits in localStorage
 - [ ] Show balance per participant

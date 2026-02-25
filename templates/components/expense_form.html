@@ -96,6 +96,19 @@
       <input type="datetime-local" name="expense_date_input" required />
       <input type="hidden" name="expense_date" value="{{ timestamp }}" />
     </label>
+
     <input type="submit" value="{{ submitText }}" />
   </form>
+
+  {% if expense is defined %}
+  <form 
+    action="./expenses/delete" 
+    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?');"
+    style="float: inline-end; margin-top: -24px;"
+  >
+    <input type="hidden" name="id" value="{{ expenseId }}" />
+    <input type="hidden" name="split_id" value="{{ split.id }}" />
+    <input class="delete" type="submit" value="Supprimer" />
+  </form>
+  {% endif %}
 </article>

@@ -178,9 +178,10 @@ impl ExpenseRepo {
         Ok(())
     }
 
-    pub async fn delete(db: &DB, id: String) -> Result<(), Error> {
-        sqlx::query("DELETE FROM expenses WHERE id = ?")
+    pub async fn delete(db: &DB, id: i64, split_id: &str) -> Result<(), Error> {
+        sqlx::query("DELETE FROM expenses WHERE id = $1 AND split_id = $2")
             .bind(id)
+            .bind(split_id)
             .execute(db.get_pool())
             .await?;
 

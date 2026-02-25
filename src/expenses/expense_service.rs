@@ -1,7 +1,7 @@
 use axum::{
     Router, extract,
     response::{IntoResponse, Response},
-    routing::post,
+    routing::{ get, post },
 };
 use axum_extra::extract::Form;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -17,6 +17,7 @@ pub fn expense_service() -> axum::Router<State> {
     Router::new()
         .route("/new", post(add_expense))
         .route("/update", post(update_expense))
+        .route("/delete", get(delete_expense))
 }
 
 #[derive(serde::Deserialize)]
@@ -79,7 +80,6 @@ async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Err
     ExpenseRepo::create(&state.db, new_expense).await
 }
 
-
 #[derive(serde::Deserialize)]
 pub struct UpdateExpenseForm {
     id: i64,
@@ -101,13 +101,13 @@ pub async fn update_expense(
 
     let response = match result {
         Err(error) => {
-            eprintln!("Error creating expense: {:?}", error);
+            eprintln!("Error updating expense: {:?}", error);
             get_split_view(&state.db, form.split_id.clone(), vec![error])
                 .await?
                 .into_response()
         }
         Ok(()) => {
-            println!("Created expense for split {}", form.split_id);
+            println!("Updated expense for split {}", form.split_id);
             get_split_view(&state.db, form.split_id.clone(), vec![])
                 .await?
                 .into_response()
@@ -139,6 +139,40 @@ async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(
     };
 
     ExpenseRepo::update(&state.db, updated_expense).await
+}
+
+#[derive(serde::Deserialize)]
+pub struct DeleteExpenseForm {
+    id: i64,
+    split_id: String,
+}
+
+pub async fn delete_expense(
+    extract::State(state): extract::State<State>,
+    Form(form): Form<DeleteExpenseForm>,
+) -> Result<Response, Error> {
+    let result = try_delete_expense(&state, &form).await;
+
+    let response = match result {
+        Err(error) => {
+            eprintln!("Error deleting expense: {:?}", error);
+            get_split_view(&state.db, form.split_id.clone(), vec![error])
+                .await?
+                .into_response()
+        }
+        Ok(()) => {
+            println!("Deleted expense for split {}", form.split_id);
+            get_split_view(&state.db, form.split_id.clone(), vec![])
+                .await?
+                .into_response()
+        }
+    };
+
+    Ok(response)
+}
+
+async fn try_delete_expense(state: &State, form: &DeleteExpenseForm) -> Result<(), Error> {
+    ExpenseRepo::delete(&state.db, form.id, &form.split_id).await
 }
 
 fn system_time_from_timestamp(timestamp: f32) -> SystemTime {

@@ -198,4 +198,8 @@ button.ghost {
   padding: 0;
 }
 
+.delete {
+  background-color: red !important;
+  color: var(--background) !important;
+}
  

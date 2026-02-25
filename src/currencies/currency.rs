@@ -63,6 +63,10 @@ pub fn try_get_currency(code: &str) -> Result<&Currency, CurrencyError> {
 }
 
 pub async fn convert(amount: f32, from: &Currency, to: &Currency) -> Result<f32, CurrencyError> {
+    if from.code == to.code {
+        return Ok(amount);
+    }
+
     let token = match API_KEY.deref() {
         Some(t) => t,
         None => return Err(CurrencyError::MissingEnvVar(TOKEN_ENV_VAR.to_string()))
