@@ -1,3 +1,5 @@
+{% import "components/currency_select.html" as select %}
+
 {% decl buttonText %}
 {% decl submitText %}
 {% decl action %}
@@ -59,7 +61,7 @@
     </label>
     <label>
       Devise:
-      <input type="text" name="currency" value="{{ currency }}" />
+      {{ select::currency_select("currency", currency) }}
     </label>
     <label>
       Payé par:

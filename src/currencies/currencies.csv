@@ -1,164 +1,164 @@
-Currency Code, Currency Name, Country
-AED, UAE Dirham, United Arab Emirates
-AFN, Afghan Afghani, Afghanistan
-ALL, Albanian Lek, Albania
-AMD, Armenian Dram, Armenia
-ANG, Netherlands Antillian Guilder, Netherlands Antilles
-AOA, Angolan Kwanza, Angola
-ARS, Argentine Peso, Argentina
-AUD, Australian Dollar, Australia
-AWG, Aruban Florin, Aruba
-AZN, Azerbaijani Manat, Azerbaijan
-BAM, Bosnia and Herzegovina Mark, Bosnia and Herzegovina
-BBD, Barbados Dollar, Barbados
-BDT, Bangladeshi Taka, Bangladesh
-BGN, Bulgarian Lev, Bulgaria
-BHD, Bahraini Dinar, Bahrain
-BIF, Burundian Franc, Burundi
-BMD, Bermudian Dollar, Bermuda
-BND, Brunei Dollar, Brunei
-BOB, Bolivian Boliviano, Bolivia
-BRL, Brazilian Real, Brazil
-BSD, Bahamian Dollar, Bahamas
-BTN, Bhutanese Ngultrum, Bhutan
-BWP, Botswana Pula, Botswana
-BYN, Belarusian Ruble, Belarus
-BZD, Belize Dollar, Belize
-CAD, Canadian Dollar, Canada
-CDF, Congolese Franc, Democratic Republic of the Congo
-CHF, Swiss Franc, Switzerland
-CLF, Chilean Unidad de Fomento, Chile
-CLP, Chilean Peso, Chile
-CNH, Offshore Chinese Renminbi, China
-CNY, Chinese Renminbi, China
-COP, Colombian Peso, Colombia
-CRC, Costa Rican Colon, Costa Rica
-CUP, Cuban Peso, Cuba
-CVE, Cape Verdean Escudo, Cape Verde
-CZK, Czech Koruna, Czech Republic
-DJF, Djiboutian Franc, Djibouti
-DKK, Danish Krone, Denmark
-DOP, Dominican Peso, Dominican Republic
-DZD, Algerian Dinar, Algeria
-EGP, Egyptian Pound, Egypt
-ERN, Eritrean Nakfa, Eritrea
-ETB, Ethiopian Birr, Ethiopia
-EUR, Euro, European Union
-FJD, Fiji Dollar, Fiji
-FKP, Falkland Islands Pound, Falkland Islands
-FOK, Faroese Króna, Faroe Islands
-GBP, Pound Sterling, United Kingdom
-GEL, Georgian Lari, Georgia
-GGP, Guernsey Pound, Guernsey
-GHS, Ghanaian Cedi, Ghana
-GIP, Gibraltar Pound, Gibraltar
-GMD, Gambian Dalasi, The Gambia
-GNF, Guinean Franc, Guinea
-GTQ, Guatemalan Quetzal, Guatemala
-GYD, Guyanese Dollar, Guyana
-HKD, Hong Kong Dollar, Hong Kong
-HNL, Honduran Lempira, Honduras
-HRK, Croatian Kuna, Croatia
-HTG, Haitian Gourde, Haiti
-HUF, Hungarian Forint, Hungary
-IDR, Indonesian Rupiah, Indonesia
-ILS, Israeli New Shekel, Israel
-IMP, Manx Pound, Isle of Man
-INR, Indian Rupee, India
-IQD, Iraqi Dinar, Iraq
-IRR, Iranian Rial, Iran
-ISK, Icelandic Króna, Iceland
-JEP, Jersey Pound, Jersey
-JMD, Jamaican Dollar, Jamaica
-JOD, Jordanian Dinar, Jordan
-JPY, Japanese Yen, Japan
-KES, Kenyan Shilling, Kenya
-KGS, Kyrgyzstani Som, Kyrgyzstan
-KHR, Cambodian Riel, Cambodia
-KID, Kiribati Dollar, Kiribati
-KMF, Comorian Franc, Comoros
-KRW, South Korean Won, South Korea
-KWD, Kuwaiti Dinar, Kuwait
-KYD, Cayman Islands Dollar, Cayman Islands
-KZT, Kazakhstani Tenge, Kazakhstan
-LAK, Lao Kip, Laos
-LBP, Lebanese Pound, Lebanon
-LKR, Sri Lanka Rupee, Sri Lanka
-LRD, Liberian Dollar, Liberia
-LSL, Lesotho Loti, Lesotho
-LYD, Libyan Dinar, Libya
-MAD, Moroccan Dirham, Morocco
-MDL, Moldovan Leu, Moldova
-MGA, Malagasy Ariary, Madagascar
-MKD, Macedonian Denar, North Macedonia
-MMK, Burmese Kyat, Myanmar
-MNT, Mongolian Tögrög, Mongolia
-MOP, Macanese Pataca, Macau
-MRU, Mauritanian Ouguiya, Mauritania
-MUR, Mauritian Rupee, Mauritius
-MVR, Maldivian Rufiyaa, Maldives
-MWK, Malawian Kwacha, Malawi
-MXN, Mexican Peso, Mexico
-MYR, Malaysian Ringgit, Malaysia
-MZN, Mozambican Metical, Mozambique
-NAD, Namibian Dollar, Namibia
-NGN, Nigerian Naira, Nigeria
-NIO, Nicaraguan Córdoba, Nicaragua
-NOK, Norwegian Krone, Norway
-NPR, Nepalese Rupee, Nepal
-NZD, New Zealand Dollar, New Zealand
-OMR, Omani Rial, Oman
-PAB, Panamanian Balboa, Panama
-PEN, Peruvian Sol, Peru
-PGK, Papua New Guinean Kina, Papua New Guinea
-PHP, Philippine Peso, Philippines
-PKR, Pakistani Rupee, Pakistan
-PLN, Polish Złoty, Poland
-PYG, Paraguayan Guaraní, Paraguay
-QAR, Qatari Riyal, Qatar
-RON, Romanian Leu, Romania
-RSD, Serbian Dinar, Serbia
-RUB, Russian Ruble, Russia
-RWF, Rwandan Franc, Rwanda
-SAR, Saudi Riyal, Saudi Arabia
-SBD, Solomon Islands Dollar, Solomon Islands
-SCR, Seychellois Rupee, Seychelles
-SDG, Sudanese Pound, Sudan
-SEK, Swedish Krona, Sweden
-SGD, Singapore Dollar, Singapore
-SHP, Saint Helena Pound, Saint Helena
-SLE, Sierra Leonean Leone, Sierra Leone
-SOS, Somali Shilling, Somalia
-SRD, Surinamese Dollar, Suriname
-SSP, South Sudanese Pound, South Sudan
-STN, São Tomé and Príncipe Dobra, São Tomé and Príncipe
-SYP, Syrian Pound, Syria
+Currency Code, Currency Name, Country, Country Code
+AED, UAE Dirham, United Arab Emirates, ae
+AFN, Afghan Afghani, Afghanistan, af
+ALL, Albanian Lek, Albania, al
+AMD, Armenian Dram, Armenia, am
+ANG, Netherlands Antillian Guilder, Netherlands Antilles, bq
+AOA, Angolan Kwanza, Angola, ao
+ARS, Argentine Peso, Argentina, ar
+AUD, Australian Dollar, Australia, au
+AWG, Aruban Florin, Aruba, aw
+AZN, Azerbaijani Manat, Azerbaijan, az
+BAM, Bosnia and Herzegovina Mark, Bosnia and Herzegovina, ba
+BBD, Barbados Dollar, Barbados, bb
+BDT, Bangladeshi Taka, Bangladesh, bd
+BGN, Bulgarian Lev, Bulgaria, bg
+BHD, Bahraini Dinar, Bahrain, bh
+BIF, Burundian Franc, Burundi, bi
+BMD, Bermudian Dollar, Bermuda, bm
+BND, Brunei Dollar, Brunei, bn
+BOB, Bolivian Boliviano, Bolivia, bo
+BRL, Brazilian Real, Brazil, br
+BSD, Bahamian Dollar, Bahamas, bs
+BTN, Bhutanese Ngultrum, Bhutan, bt
+BWP, Botswana Pula, Botswana, bw
+BYN, Belarusian Ruble, Belarus, by
+BZD, Belize Dollar, Belize, bz
+CAD, Canadian Dollar, Canada, ca
+CDF, Congolese Franc, Democratic Republic of the Congo, cd
+CHF, Swiss Franc, Switzerland, ch
+CLF, Chilean Unidad de Fomento, Chile, cl
+CLP, Chilean Peso, Chile, cl
+CNH, Offshore Chinese Renminbi, China, cn
+CNY, Chinese Renminbi, China, cn
+COP, Colombian Peso, Colombia, co
+CRC, Costa Rican Colon, Costa Rica, cr
+CUP, Cuban Peso, Cuba, cu
+CVE, Cape Verdean Escudo, Cape Verde, cv
+CZK, Czech Koruna, Czech Republic, cz
+DJF, Djiboutian Franc, Djibouti, dj
+DKK, Danish Krone, Denmark, dk
+DOP, Dominican Peso, Dominican Republic, do
+DZD, Algerian Dinar, Algeria, dz
+EGP, Egyptian Pound, Egypt, eg
+ERN, Eritrean Nakfa, Eritrea, er
+ETB, Ethiopian Birr, Ethiopia, et
+EUR, Euro, European Union, eu
+FJD, Fiji Dollar, Fiji, fj
+FKP, Falkland Islands Pound, Falkland Islands, fk
+FOK, Faroese Króna, Faroe Islands, fo
+GBP, Pound Sterling, United Kingdom, gb
+GEL, Georgian Lari, Georgia, ge
+GGP, Guernsey Pound, Guernsey, gg
+GHS, Ghanaian Cedi, Ghana, gh
+GIP, Gibraltar Pound, Gibraltar, gi
+GMD, Gambian Dalasi, The Gambia, gm
+GNF, Guinean Franc, Guinea, gn
+GTQ, Guatemalan Quetzal, Guatemala, gt
+GYD, Guyanese Dollar, Guyana, gy
+HKD, Hong Kong Dollar, Hong Kong, hk
+HNL, Honduran Lempira, Honduras, hn
+HRK, Croatian Kuna, Croatia, hr
+HTG, Haitian Gourde, Haiti, ht
+HUF, Hungarian Forint, Hungary, hu
+IDR, Indonesian Rupiah, Indonesia, id
+ILS, Israeli New Shekel, Israel, il
+IMP, Manx Pound, Isle of Man, im
+INR, Indian Rupee, India, in
+IQD, Iraqi Dinar, Iraq, iq
+IRR, Iranian Rial, Iran, ir
+ISK, Icelandic Króna, Iceland, is
+JEP, Jersey Pound, Jersey, je
+JMD, Jamaican Dollar, Jamaica, jm
+JOD, Jordanian Dinar, Jordan, jo
+JPY, Japanese Yen, Japan, jp
+KES, Kenyan Shilling, Kenya, ke
+KGS, Kyrgyzstani Som, Kyrgyzstan, kg
+KHR, Cambodian Riel, Cambodia, kh
+KID, Kiribati Dollar, Kiribati, ki
+KMF, Comorian Franc, Comoros, km
+KRW, South Korean Won, South Korea, kr
+KWD, Kuwaiti Dinar, Kuwait, kw
+KYD, Cayman Islands Dollar, Cayman Islands, ky
+KZT, Kazakhstani Tenge, Kazakhstan, kz
+LAK, Lao Kip, Laos, la
+LBP, Lebanese Pound, Lebanon, lb
+LKR, Sri Lanka Rupee, Sri Lanka, lk
+LRD, Liberian Dollar, Liberia, lr
+LSL, Lesotho Loti, Lesotho, ls
+LYD, Libyan Dinar, Libya, ly
+MAD, Moroccan Dirham, Morocco, ma
+MDL, Moldovan Leu, Moldova, md
+MGA, Malagasy Ariary, Madagascar, mg
+MKD, Macedonian Denar, North Macedonia, mk
+MMK, Burmese Kyat, Myanmar, mm
+MNT, Mongolian Tögrög, Mongolia, mn
+MOP, Macanese Pataca, Macau, mo
+MRU, Mauritanian Ouguiya, Mauritania, mr
+MUR, Mauritian Rupee, Mauritius, mu
+MVR, Maldivian Rufiyaa, Maldives, mv
+MWK, Malawian Kwacha, Malawi, mw
+MXN, Mexican Peso, Mexico, mx
+MYR, Malaysian Ringgit, Malaysia, my
+MZN, Mozambican Metical, Mozambique, mz
+NAD, Namibian Dollar, Namibia, na
+NGN, Nigerian Naira, Nigeria, ng
+NIO, Nicaraguan Córdoba, Nicaragua, ni
+NOK, Norwegian Krone, Norway, no
+NPR, Nepalese Rupee, Nepal, np
+NZD, New Zealand Dollar, New Zealand, nz
+OMR, Omani Rial, Oman, om
+PAB, Panamanian Balboa, Panama, pa
+PEN, Peruvian Sol, Peru, pe
+PGK, Papua New Guinean Kina, Papua New Guinea, pg
+PHP, Philippine Peso, Philippines, ph
+PKR, Pakistani Rupee, Pakistan, pk
+PLN, Polish Złoty, Poland, pl
+PYG, Paraguayan Guaraní, Paraguay, py
+QAR, Qatari Riyal, Qatar, qa
+RON, Romanian Leu, Romania, ro
+RSD, Serbian Dinar, Serbia, rs
+RUB, Russian Ruble, Russia, ru
+RWF, Rwandan Franc, Rwanda, rw
+SAR, Saudi Riyal, Saudi Arabia, sa
+SBD, Solomon Islands Dollar, Solomon Islands, sb
+SCR, Seychellois Rupee, Seychelles, sc
+SDG, Sudanese Pound, Sudan, sd
+SEK, Swedish Krona, Sweden, se
+SGD, Singapore Dollar, Singapore, sg
+SHP, Saint Helena Pound, Saint Helena, sh
+SLE, Sierra Leonean Leone, Sierra Leone, sl
+SOS, Somali Shilling, Somalia, so
+SRD, Surinamese Dollar, Suriname, sr
+SSP, South Sudanese Pound, South Sudan, ss
+STN, São Tomé and Príncipe Dobra, São Tomé and Príncipe, st
+SYP, Syrian Pound, Syria, sy
 SZL, Eswatini Lilangeni, Eswatini
-THB, Thai Baht, Thailand
-TJS, Tajikistani Somoni, Tajikistan
-TMT, Turkmenistan Manat, Turkmenistan
-TND, Tunisian Dinar, Tunisia
-TOP, Tongan Paʻanga, Tonga
-TRY, Turkish Lira, Turkey
-TTD, Trinidad and Tobago Dollar, Trinidad and Tobago
-TVD, Tuvaluan Dollar, Tuvalu
-TWD, New Taiwan Dollar, Taiwan
-TZS, Tanzanian Shilling, Tanzania
-UAH, Ukrainian Hryvnia, Ukraine
-UGX, Ugandan Shilling, Uganda
-USD, United States Dollar, United States
-UYU, Uruguayan Peso, Uruguay
-UZS, Uzbekistani So'm, Uzbekistan
-VES, Venezuelan Bolívar Soberano, Venezuela
-VND, Vietnamese Đồng, Vietnam
-VUV, Vanuatu Vatu, Vanuatu
-WST, Samoan Tālā, Samoa
-XAF, Central African CFA Franc, CEMAC
-XCD, East Caribbean Dollar, Organisation of Eastern Caribbean States
-XDR, Special Drawing Rights, International Monetary Fund
-XOF, West African CFA franc, CFA
-XPF, CFP Franc, Collectivités d'Outre-Mer
-YER, Yemeni Rial, Yemen
-ZAR, South African Rand, South Africa
-ZMW, Zambian Kwacha, Zambia
-ZWL, Zimbabwean Dollar, Zimbabwe
+THB, Thai Baht, Thailand, th
+TJS, Tajikistani Somoni, Tajikistan, tj
+TMT, Turkmenistan Manat, Turkmenistan, tm
+TND, Tunisian Dinar, Tunisia, tn
+TOP, Tongan Paʻanga, Tonga, to
+TRY, Turkish Lira, Turkey, tr
+TTD, Trinidad and Tobago Dollar, Trinidad and Tobago, tt
+TVD, Tuvaluan Dollar, Tuvalu, tv
+TWD, New Taiwan Dollar, Taiwan, tw
+TZS, Tanzanian Shilling, Tanzania, tz
+UAH, Ukrainian Hryvnia, Ukraine, ua
+UGX, Ugandan Shilling, Uganda, ug
+USD, United States Dollar, United States, us
+UYU, Uruguayan Peso, Uruguay, uy
+UZS, Uzbekistani So'm, Uzbekistan, uz
+VES, Venezuelan Bolívar Soberano, Venezuela, ve
+VND, Vietnamese Đồng, Vietnam, vn
+VUV, Vanuatu Vatu, Vanuatu, vu
+WST, Samoan Tālā, Samoa, ws
+XAF, Central African CFA Franc, CEMAC, 
+XCD, East Caribbean Dollar, Organisation of Eastern Caribbean States, 
+XDR, Special Drawing Rights, International Monetary Fund, 
+XOF, West African CFA franc, CFA, 
+XPF, CFP Franc, Collectivités d'Outre-Mer, nc
+YER, Yemeni Rial, Yemen, ye
+ZAR, South African Rand, South Africa, za
+ZMW, Zambian Kwacha, Zambia, zm
+ZWL, Zimbabwean Dollar, Zimbabwe, zw

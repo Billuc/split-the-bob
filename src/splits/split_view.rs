@@ -3,6 +3,7 @@ use std::time::SystemTime;
 use axum::response::Html;
 
 use crate::balances::balance::{Balance, balances_from_expenses};
+use crate::currencies::currency::{CURRENCIES, Currency};
 use crate::error::Error;
 use crate::expenses::expense::Expense;
 use crate::splits::split::Split;
@@ -12,11 +13,12 @@ use crate::expenses::expense_repo::ExpenseRepo;
 
 #[derive(Template)]
 #[template(path = "split_view.html")]
-pub struct SplitView {
-    pub split: Split,
-    pub expenses: Vec<Expense>,
-    pub balances: Vec<Balance>,
-    pub errors: Vec<Error>,
+struct SplitView {
+    split: Split,
+    expenses: Vec<Expense>,
+    balances: Vec<Balance>,
+    errors: Vec<Error>,
+    currencies: Vec<Currency>,
 }
 
 pub async fn get_split_view(db: &DB, id: String, errors: Vec<Error>) -> Result<Html<String>, Error> {
@@ -29,6 +31,7 @@ pub async fn get_split_view(db: &DB, id: String, errors: Vec<Error>) -> Result<H
         expenses,
         balances,
         errors,
+        currencies: (*CURRENCIES).clone()
     };
     let view = template.render()?;
     Ok(view.into())

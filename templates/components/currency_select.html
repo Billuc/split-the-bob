@@ -1,0 +1,13 @@
+{% macro currency_select(name, value = "EUR") %}
+<select class="currency-select" name="{{ name }}" autocomplete="off">
+    <button><selectedcontent></selectedcontent></button>
+    {% for curr in currencies %}
+        <option value="{{ curr.code }}" {% if &curr.code == value %}selected="selected"{% endif %}>
+            {{ curr.name }}
+            {% if let Some(code) = curr.country_code %}
+                <img src="https://flagcdn.com/16x12/{{ code }}.png" width="16" height="12" alt="{{ curr.country }}" />
+            {% endif %}
+        </option>
+    {% endfor %}
+</select>
+{% endmacro %}

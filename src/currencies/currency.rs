@@ -1,10 +1,12 @@
 use serde_json::{Map, value::Value};
-use std::{env, fmt::Display};
+use std::{env, fmt::Display, ops::Deref};
 
+#[derive(Clone)]
 pub struct Currency {
     pub code: String,
     pub name: String,
     pub country: String,
+    pub country_code: Option<String>
 }
 
 #[derive(Debug)]
@@ -38,16 +40,15 @@ lazy_static::lazy_static! {
         .map(|line| {
             let parts: Vec<&str> = line.split(',').collect();
             Currency {
-                code: parts[0].to_string(),
-                name: parts[1].to_string(),
-                country: parts[2].to_string(),
+                code: parts[0].trim().to_string(),
+                name: parts[1].trim().to_string(),
+                country: parts[2].trim().to_string(),
+                country_code: parts.get(3).map(|code| code.trim().to_string()),
             }
         })
         .collect();
-}
 
-fn api_key() -> Result<String, CurrencyError> {
-    env::var(TOKEN_ENV_VAR).or(Err(CurrencyError::MissingEnvVar(TOKEN_ENV_VAR.to_string())))
+    static ref API_KEY: Option<String> = env::var(TOKEN_ENV_VAR).ok();
 }
 
 pub fn try_get_currency(code: &str) -> Result<&Currency, CurrencyError> {
@@ -62,7 +63,11 @@ pub fn try_get_currency(code: &str) -> Result<&Currency, CurrencyError> {
 }
 
 pub async fn convert(amount: f32, from: &Currency, to: &Currency) -> Result<f32, CurrencyError> {
-    let token = api_key()?;
+    let token = match API_KEY.deref() {
+        Some(t) => t,
+        None => return Err(CurrencyError::MissingEnvVar(TOKEN_ENV_VAR.to_string()))
+    };
+
     let endpoint = format!(
         "https://v6.exchangerate-api.com/v6/{}/pair/{}/{}/{:.2}",
         token, from.code, to.code, amount

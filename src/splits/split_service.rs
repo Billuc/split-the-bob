@@ -1,4 +1,3 @@
-use askama::Template;
 use axum::{
     Router, extract,
     http::StatusCode,
@@ -7,7 +6,7 @@ use axum::{
 };
 use axum_extra::extract::Form;
 
-use crate::{axum_state::State, splits::split_repo::{CreateSplit, UpdateSplit}, view::{IndexView, index}};
+use crate::{axum_state::State, splits::split_repo::{CreateSplit, UpdateSplit}, view::index};
 use crate::error::Error;
 use crate::splits::split_repo::SplitRepo;
 use crate::splits::split_view::get_split_view;

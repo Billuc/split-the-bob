@@ -56,7 +56,7 @@ label.checkbox-label {
   cursor: pointer;
 }
 
-input[type="submit"], button, .link-action {
+input[type="submit"], button:not(:has(selectedcontent)), .link-action {
   background-color: var(--primary);
   color: var(--text);
   border: none;

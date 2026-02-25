@@ -1,7 +1,5 @@
-use askama::Template;
 use axum::{
     Router,
-    response::Html,
     routing::get,
 };
 use std::env;
