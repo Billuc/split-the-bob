@@ -1,5 +1,5 @@
 {% macro currency_select(name, value = "EUR") %}
-<select class="currency-select" name="{{ name }}" autocomplete="off">
+<select class="currency-select" name="{{ name }}" autocomplete="off" required>
     <button><selectedcontent></selectedcontent></button>
     {% for curr in currencies %}
         <option value="{{ curr.code }}" {% if &curr.code == value %}selected="selected"{% endif %}>

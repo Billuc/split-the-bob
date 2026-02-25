@@ -47,17 +47,23 @@
     <input type="hidden" name="split_id" value="{{ split.id }}" />
     <label>
       Nom:
-      <input type="text"
-             name="name"
-             {% if expense is defined %}value="{{ expense.name }}"{% endif %}
-             placeholder="Nouvelle dépense" />
+      <input 
+        type="text"
+        name="name"
+        {% if expense is defined %}value="{{ expense.name }}"{% endif %}
+        placeholder="Nouvelle dépense"
+        required 
+      />
     </label>
     <label>
       Montant:
-      <input type="number"
-             name="amount"
-             {% if expense is defined %}value="{{ expense.original_amount }}"{% endif %}
-             placeholder="Montant" />
+      <input 
+        type="number"
+        name="amount"
+        {% if expense is defined %}value="{{ expense.original_amount }}"{% endif %}
+        placeholder="Montant" 
+        required
+      />
     </label>
     <label>
       Devise:
@@ -65,10 +71,10 @@
     </label>
     <label>
       Payé par:
-      <select name="payed_by">
+      <select name="payed_by" required>
         {% for participant in split.participants %}
           {% let selected = participant == payedBy %}
-          <option value="{{ participant }}" {% if selected %}selected{% endif %}>{{ participant }}</option>
+          <option value="{{ participant }}" {% if selected %}selected="selected"{% endif %}>{{ participant }}</option>
         {% endfor %}
       </select>
     </label>
@@ -87,7 +93,7 @@
     </b>
     <label>
       Date:
-      <input type="datetime-local" name="expense_date_input" />
+      <input type="datetime-local" name="expense_date_input" required />
       <input type="hidden" name="expense_date" value="{{ timestamp }}" />
     </label>
     <input type="submit" value="{{ submitText }}" />
