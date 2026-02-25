@@ -1,17 +1,20 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use axum::{
     Router, extract,
-    http::StatusCode,
     response::{Html, IntoResponse, Response},
     routing::{get, post},
 };
 use axum_extra::extract::Form;
 
-use crate::{axum_state::State, splits::split_repo::{CreateSplit, UpdateSplit}, view::index};
-use crate::error::Error;
 use crate::splits::split_repo::SplitRepo;
 use crate::splits::split_view::get_split_view;
+use crate::{
+    axum_state::State,
+    splits::split_repo::{CreateSplit, UpdateSplit},
+    view::index,
+};
+use crate::{error::Error, splits::redirect_to_split};
 
 pub fn split_service() -> axum::Router<State> {
     Router::new()
@@ -23,13 +26,24 @@ pub fn split_service() -> axum::Router<State> {
 #[derive(serde::Deserialize)]
 pub struct SplitQuery {
     split_id: String,
+    errors: Option<String>,
 }
 
 async fn show_split(
     extract::State(state): extract::State<State>,
     extract::Query(query): extract::Query<SplitQuery>,
 ) -> Result<impl IntoResponse, Error> {
-    get_split_view(&state.db, query.split_id, vec![]).await
+    get_split_view(
+        &state.db,
+        query.split_id,
+        query
+            .errors
+            .unwrap_or(String::new())
+            .split('\n')
+            .filter(|err| !err.is_empty())
+            .collect(),
+    )
+    .await
 }
 
 #[derive(serde::Deserialize)]
@@ -58,17 +72,12 @@ pub async fn create_split(
         }
         Ok(id) => {
             println!("Created split with id {}", id);
-            (
-                StatusCode::SEE_OTHER,
-                [("Location", format!("/splits?split_id={id}"))],
-            )
-                .into_response()
+            redirect_to_split(&id, vec![])?
         }
     };
 
     Ok(response)
 }
-
 
 #[derive(serde::Deserialize)]
 pub struct UpdateSplitForm {
@@ -93,11 +102,15 @@ pub async fn update_split(
     let response = match SplitRepo::update(&state.db, updated_split).await {
         Err(error) => {
             eprintln!("Error updating split: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error]).await?.into_response()
+            get_split_view(&state.db, form.split_id.clone(), vec![&error.to_string()])
+                .await?
+                .into_response()
         }
         Ok(_) => {
             println!("Updated split with id {}", form.split_id.clone());
-            get_split_view(&state.db, form.split_id.clone(), vec![]).await?.into_response()
+            get_split_view(&state.db, form.split_id.clone(), vec![])
+                .await?
+                .into_response()
         }
     };
 
@@ -109,7 +122,9 @@ fn distinct_participants(participants: &Vec<String>) -> Vec<String> {
 
     for p in participants {
         let key = p.to_uppercase();
-        if map.contains_key(&key) { continue; }
+        if map.contains_key(&key) {
+            continue;
+        }
 
         map.insert(key, &p);
     }

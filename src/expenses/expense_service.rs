@@ -1,17 +1,16 @@
 use axum::{
     Router, extract,
-    response::{IntoResponse, Response},
-    routing::{ get, post },
+    response::Response,
+    routing::{get, post},
 };
 use axum_extra::extract::Form;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use crate::{axum_state::State, splits::split_repo::SplitRepo};
 use crate::error::Error;
 use crate::expenses::expense::{Expense, SplitMethod};
 use crate::expenses::expense_repo::ExpenseRepo;
-use crate::splits::split_view::get_split_view;
-use crate::currencies::currency;
+use crate::{axum_state::State, splits::split_repo::SplitRepo};
+use crate::{currencies::currency, splits::redirect_to_split};
 
 pub fn expense_service() -> axum::Router<State> {
     Router::new()
@@ -41,15 +40,11 @@ pub async fn add_expense(
     let response = match result {
         Err(error) => {
             eprintln!("Error creating expense: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![error])?
         }
         Ok(()) => {
             println!("Created expense for split {}", form.split_id);
-            get_split_view(&state.db, form.split_id.clone(), vec![])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![])?
         }
     };
 
@@ -61,7 +56,8 @@ async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Err
 
     let default_currency = currency::try_get_currency(&split.default_currency)?;
     let expense_currency = currency::try_get_currency(&form.currency)?;
-    let default_currency_amount = currency::convert(form.amount, expense_currency, default_currency).await?;
+    let default_currency_amount =
+        currency::convert(form.amount, expense_currency, default_currency).await?;
 
     let new_expense = Expense {
         id: 0, // Will be auto-assigned by database
@@ -102,15 +98,11 @@ pub async fn update_expense(
     let response = match result {
         Err(error) => {
             eprintln!("Error updating expense: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![error])?
         }
         Ok(()) => {
             println!("Updated expense for split {}", form.split_id);
-            get_split_view(&state.db, form.split_id.clone(), vec![])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![])?
         }
     };
 
@@ -122,7 +114,8 @@ async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(
 
     let default_currency = currency::try_get_currency(&split.default_currency)?;
     let expense_currency = currency::try_get_currency(&form.currency)?;
-    let default_currency_amount = currency::convert(form.amount, expense_currency, default_currency).await?;
+    let default_currency_amount =
+        currency::convert(form.amount, expense_currency, default_currency).await?;
 
     let updated_expense = Expense {
         id: form.id,
@@ -156,15 +149,11 @@ pub async fn delete_expense(
     let response = match result {
         Err(error) => {
             eprintln!("Error deleting expense: {:?}", error);
-            get_split_view(&state.db, form.split_id.clone(), vec![error])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![error])?
         }
         Ok(()) => {
             println!("Deleted expense for split {}", form.split_id);
-            get_split_view(&state.db, form.split_id.clone(), vec![])
-                .await?
-                .into_response()
+            redirect_to_split(&form.split_id, vec![])?
         }
     };
 

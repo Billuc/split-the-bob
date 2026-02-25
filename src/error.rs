@@ -1,6 +1,7 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::response::Response;
+use std::convert::Infallible;
 use std::fmt::Display;
 
 use crate::currencies::currency::CurrencyError;
@@ -11,6 +12,7 @@ pub enum Error {
     MigrateError(sqlx::migrate::MigrateError),
     TemplateError(askama::Error),
     CurrencyError(CurrencyError),
+    Infallible,
 }
 
 impl From<sqlx::Error> for Error {
@@ -37,6 +39,12 @@ impl From<CurrencyError> for Error {
     }
 }
 
+impl From<Infallible> for Error {
+    fn from(_: Infallible) -> Self {
+        Error::Infallible
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -44,6 +52,7 @@ impl Display for Error {
             Error::MigrateError(err) => write!(f, "Migration error: {}", err),
             Error::TemplateError(err) => write!(f, "Template rendering error: {}", err),
             Error::CurrencyError(err) => write!(f, "Currency error: {}", err),
+            Error::Infallible => write!(f, "This should never happen !"),
         }
     }
 }
@@ -65,6 +74,10 @@ impl IntoResponse for Error {
             }
             Error::CurrencyError(err) => {
                 eprintln!("Currency error: {:?}", err);
+                (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
+            }
+            Error::Infallible => {
+                eprintln!("This should never happen");
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
             }
         }

@@ -7,7 +7,6 @@ use tower_http::services::ServeDir;
 
 use crate::axum_state::State;
 use crate::db::DB;
-use crate::error::Error;
 use crate::expenses::expense_service::expense_service;
 use crate::splits::split_service::split_service;
 use crate::view::index;
