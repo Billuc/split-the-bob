@@ -1,3 +1,5 @@
+use std::collections::{HashMap, HashSet};
+
 use axum::{
     Router, extract,
     http::StatusCode,
@@ -44,7 +46,7 @@ pub async fn create_split(
 ) -> Result<Response, Error> {
     let new_split = CreateSplit {
         description: form.description,
-        participants: form.participants,
+        participants: distinct_participants(&form.participants),
         default_currency: form.default_currency,
     };
 
@@ -84,7 +86,7 @@ pub async fn update_split(
     let updated_split = UpdateSplit {
         id: form.split_id.clone(),
         description: form.description,
-        participants: form.participants,
+        participants: form.participants.as_ref().map(distinct_participants),
         default_currency: form.default_currency,
     };
 
@@ -102,4 +104,15 @@ pub async fn update_split(
     Ok(response)
 }
 
+fn distinct_participants(participants: &Vec<String>) -> Vec<String> {
+    let mut map: HashMap<String, &str> = HashMap::new();
 
+    for p in participants {
+        let key = p.to_uppercase();
+        if map.contains_key(&key) { continue; }
+
+        map.insert(key, &p);
+    }
+
+    map.iter().map(|entry| entry.1.to_string()).collect()
+}
