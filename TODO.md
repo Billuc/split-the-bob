@@ -8,10 +8,10 @@
     - https://www.exchangerate-api.com/docs/supported-currencies
 - [x] IDs from nouns and adjectives
 - [x] Avoid duplicate participants
-- [ ] Better error handling in split_service (see expense_service)
+- [x] Better error handling in split_service (see expense_service)
 - [x] Expense deletion
 - [ ] Split deletion
-- [ ] Save joined splits in localStorage
+- [x] Save joined splits in localStorage
 - [ ] Show balance per participant
 - [ ] Add more split methods
     - [ ] Split by amount
@@ -19,3 +19,5 @@
 - [ ] Review balance algorithm to limit number of required operations
 - [x] Select currency instead of type
 - [x] Show original amount and currency
+- [ ] Better architecture
+- [ ] Remove split from localStorage

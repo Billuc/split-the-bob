@@ -1,0 +1,12 @@
+
+{% block success %}
+<div id="{{ split.id }}">
+    <a href="./splits?split_id={{ split.id }}#main" target="htmz">{{ split.description }}</a>
+</div>
+{% endblock %}
+
+{% block failure %}
+<div id="{{ split_id }}">
+    <p class="error">Could not find a split with ID {{ split_id }}</p>
+</div>
+{% endblock %}

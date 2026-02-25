@@ -1,15 +1,15 @@
 use askama::Template;
-use std::time::SystemTime;
 use axum::response::Html;
+use std::time::SystemTime;
 
 use crate::balances::balance::{Balance, balances_from_expenses};
 use crate::currencies::currency::{CURRENCIES, Currency};
+use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense::Expense;
-use crate::splits::split::Split;
-use crate::db::DB;
-use crate::splits::split_repo::SplitRepo;
 use crate::expenses::expense_repo::ExpenseRepo;
+use crate::splits::split::Split;
+use crate::splits::split_repo::SplitRepo;
 
 #[derive(Template)]
 #[template(path = "split_view.html")]
@@ -31,8 +31,17 @@ pub async fn get_split_view(db: &DB, id: String, errors: Vec<&str>) -> Result<Ht
         expenses,
         balances,
         errors,
-        currencies: (*CURRENCIES).clone()
+        currencies: (*CURRENCIES).clone(),
     };
     let view = template.render()?;
     Ok(view.into())
+}
+
+#[derive(Template)]
+#[template(path = "split_details.html")]
+pub enum SplitDetails {
+    #[template(block = "success")]
+    Success { split: Split },
+    #[template(block = "failure")]
+    Failure { split_id: String },
 }

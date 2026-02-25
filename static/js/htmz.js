@@ -4,8 +4,10 @@ function htmz(frame) {
   }
 
   const newUrl = new URL(frame.contentWindow.location.href);
-  newUrl.hash = "";
-  window.history.pushState(null, "", newUrl);
+  if (newUrl.hash === "#main") {
+    newUrl.hash = "";
+    window.history.pushState(null, "", newUrl);
+  }
 
   setTimeout(() =>
     document

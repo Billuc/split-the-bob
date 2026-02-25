@@ -1,14 +1,16 @@
 use std::collections::HashMap;
 
+use askama::Template;
 use axum::{
-    Router, extract,
+    Router,
+    extract::{self, Query},
     response::{Html, IntoResponse, Response},
     routing::{get, post},
 };
 use axum_extra::extract::Form;
 
-use crate::splits::split_repo::SplitRepo;
 use crate::splits::split_view::get_split_view;
+use crate::splits::{split_repo::SplitRepo, split_view::SplitDetails};
 use crate::{
     axum_state::State,
     splits::split_repo::{CreateSplit, UpdateSplit},
@@ -21,6 +23,7 @@ pub fn split_service() -> axum::Router<State> {
         .route("/", get(show_split))
         .route("/", post(update_split))
         .route("/new", post(create_split))
+        .route("/details", get(split_details))
 }
 
 #[derive(serde::Deserialize)]
@@ -130,4 +133,32 @@ fn distinct_participants(participants: &Vec<String>) -> Vec<String> {
     }
 
     map.iter().map(|entry| entry.1.to_string()).collect()
+}
+
+#[derive(serde::Deserialize)]
+pub struct SplitDetailsQuery {
+    split_id: String,
+}
+
+pub async fn split_details(
+    extract::State(state): extract::State<State>,
+    Query(query): Query<SplitDetailsQuery>,
+) -> Result<Response, Error> {
+    let response = match SplitRepo::get_by_id(&state.db, query.split_id.clone()).await {
+        Err(error) => {
+            eprintln!(
+                "Could not find split with ID {}: {:?}",
+                query.split_id.clone(),
+                error
+            );
+            SplitDetails::Failure {
+                split_id: query.split_id,
+            }
+            .render()?
+            .into_response()
+        }
+        Ok(split) => SplitDetails::Success { split }.render()?.into_response(),
+    };
+
+    Ok(response)
 }
