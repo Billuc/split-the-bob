@@ -1,5 +1,6 @@
 use askama::Template;
 use axum::response::Html;
+use std::collections::HashMap;
 use std::time::SystemTime;
 
 use crate::balances::balance::{Balance, balances_from_expenses};
@@ -14,23 +15,25 @@ use crate::splits::split_repo::SplitRepo;
 #[derive(Template)]
 #[template(path = "split_view.html")]
 struct SplitView<'a> {
+    errors: Vec<&'a str>,
     split: Split,
     expenses: Vec<Expense>,
     balances: Vec<Balance>,
-    errors: Vec<&'a str>,
+    individual_balances: HashMap<String, f32>,
     currencies: Vec<Currency>,
 }
 
 pub async fn get_split_view(db: &DB, id: String, errors: Vec<&str>) -> Result<Html<String>, Error> {
     let split = SplitRepo::get_by_id(db, id).await?;
     let expenses = ExpenseRepo::get_for_split(db, &split.id).await?;
-    let balances = balances_from_expenses(&expenses, split.default_currency.clone());
+    let (balances, individual_balances) = balances_from_expenses(&expenses, split.default_currency.clone());
 
     let template = SplitView {
+        errors,
         split,
         expenses,
         balances,
-        errors,
+        individual_balances,
         currencies: (*CURRENCIES).clone(),
     };
     let view = template.render()?;

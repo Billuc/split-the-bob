@@ -12,17 +12,27 @@
     <div id="participants">
       <h3>Participants</h3>
       <ul>
-        {% for participant in split.participants %}<li>{{ participant }}</li>{% endfor %}
+        {% for participant in split.participants %}
+          <li>
+            {{ participant }} 
+
+            {% let balance_ref = individual_balances.get(*participant).unwrap_or(&0.0) %}
+            {% let balance_for_p = *balance_ref * -1.0 %}
+            <span class="individual_balance {% if balance_for_p > 0.0 %}positive{% else %}negative{% endif %}">
+              ({{ balance_for_p | fmt("{:.2}") }}{{ split.default_currency }})
+            </span>
+          </li>
+        {% endfor %}
       </ul>
       {% include "components/new_participant_form.html" %}
     </div>
 
     <div id="expenses">
       <h3>Dépenses</h3>
-      <dl>
-        {% for expense in expenses %} {% include "components/expense.html" %} {% endfor %}
-      </dl>
       {% include "components/expense_form.html" %}
+      <table>
+        {% for expense in expenses %} {% include "components/expense.html" %} {% endfor %}
+      </table>
       <script src="./js/expense-date.js"></script>
     </div>
 

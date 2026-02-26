@@ -108,34 +108,36 @@ ul {
   width: fit-content;
   padding-inline-start: 20px;
   margin: 0.5rem auto;
-}
-
-dl {
-  width: fit-content;
-  margin: 0.5rem auto;
   text-align: start;
 }
 
-dt {
-  font-weight: bold;
-  margin: 0.5rem 0 0.25rem;
-  color: var(--text-2);
-  display: inline-flex;
-  justify-content: space-between;
-  width: 100%;
-}
-dd {
-  margin-bottom: 1rem;
+table { 
+  border-collapse: collapse; 
+  width: fit-content;
+  margin: 0.5rem auto;
+  text-align: center;
 }
 
-dd, #balances li {
+tr.expense td {
+  padding-top: 0.5rem;
+}
+tr.expense span {
+  font-weight: bold;
+  color: var(--text-2);
+  padding: 0.25rem;
+}
+tr.expense-details td {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+tr.expense-details, #balances li {
   color: color-mix(in oklab, var(--text) 50%, transparent);
   font-size: small;
 }
-dd span, #balances li span {
+tr.expense-details span, #balances li span {
   color: var(--text);
   padding: 0.25rem;
-  font-size: medium;
 }
 
 .error {
@@ -211,4 +213,14 @@ h1 img {
   vertical-align: middle;
   height: 1em;
   width: auto;
+}
+
+.individual_balance {
+  font-size: 0.8rem;
+}
+.individual_balance.positive {
+  color: green;
+}
+.individual_balance.negative {
+  color: red;
 }

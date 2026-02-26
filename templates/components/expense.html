@@ -6,18 +6,22 @@
     {% let timestamp = 0.0 %}
 {% endmatch %}
 
-<dt>
-  <span>{{ expense.name }}</span> 
-  <span>
-    {{ expense.amount }}{{ expense.currency }}
-    {% if expense.original_currency != expense.currency %}
-      <span class="original-amount">({{ expense.original_amount }}{{ expense.original_currency }})</span>
-    {% endif %}
-  </span>
-  {% include "components/expense_form.html" %}
-</dt>
-<dd>
-  Payé par <span>{{ expense.payed_by }}</span> pour
-  <span>{{ expense.payed_for | join(", ") }}</span>
-  <span class="expense-date-display" data-timestamp="{{ timestamp }}"></span>
-</dd>
+<tr class="expense">
+  <td>
+    <span>{{ expense.name }}</span> - 
+    <span>
+      {{ expense.amount | fmt("{:.2}") }}{{ expense.currency }}
+      {% if expense.original_currency != expense.currency %}
+        <span class="original-amount">({{ expense.original_amount | fmt("{:.2}") }}{{ expense.original_currency }})</span>
+      {% endif %}
+    </span> &nbsp;
+    {% include "components/expense_form.html" %}
+  </td>
+</tr>
+<tr class="expense-details">
+  <td>
+    Payé par <span>{{ expense.payed_by }}</span> pour
+    <span>{{ expense.payed_for | join(", ") }}</span> le 
+    <span class="expense-date-display" data-timestamp="{{ timestamp }}"></span>
+  </td>
+</tr>

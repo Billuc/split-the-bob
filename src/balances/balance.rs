@@ -9,12 +9,15 @@ pub struct Balance {
     pub creditor: String,
 }
 
-pub fn balances_from_expenses(expenses: &Vec<Expense>, default_currency: String) -> Vec<Balance> {
-    let (mut debts, mut credits) = get_credits_and_debts(expenses);
-    calculate_balances(debts, credits, default_currency)
+pub fn balances_from_expenses(expenses: &Vec<Expense>, default_currency: String) -> (Vec<Balance>, HashMap<String, f32>) {
+    let individual_balances = get_individual_balances(expenses);
+    let (debts, credits) = get_credits_and_debts(&individual_balances);
+    let balances = calculate_balances(debts, credits, default_currency);
+
+    (balances, individual_balances)
 }
 
-fn get_credits_and_debts(expenses: &Vec<Expense>) -> (Vec<(String, f32)>, Vec<(String, f32)>) {
+fn get_individual_balances(expenses: &Vec<Expense>) -> HashMap<String, f32> {
     let mut balance_per_participant: HashMap<String, f32> = HashMap::new();
 
     for expense in expenses {
@@ -24,14 +27,18 @@ fn get_credits_and_debts(expenses: &Vec<Expense>) -> (Vec<(String, f32)>, Vec<(S
         }
     }
 
+    balance_per_participant
+}
+
+fn get_credits_and_debts(balance_per_participant: &HashMap<String, f32>) -> (Vec<(String, f32)>, Vec<(String, f32)>) {
     let mut debts: Vec<(String, f32)> = Vec::new();
     let mut credits: Vec<(String, f32)> = Vec::new();
 
     for (participant, balance) in balance_per_participant {
-        if balance < 0.0 {
-            credits.push((participant, -balance));
-        } else if balance > 0.0 {
-            debts.push((participant, balance));
+        if *balance < 0.0 {
+            credits.push((participant.clone(), -(*balance)));
+        } else if *balance > 0.0 {
+            debts.push((participant.clone(), *balance));
         }
     }
 
@@ -65,10 +72,11 @@ fn split_evenly(
 
 fn calculate_balances(
     debts: Vec<(String, f32)>,
-    mut credits: Vec<(String, f32)>,
+    credits: Vec<(String, f32)>,
     currency: String,
 ) -> Vec<Balance> {
     let mut balances: Vec<Balance> = Vec::new();
+    let mut credits = credits.clone();
 
     for (debtor, debt_amount) in debts {
         let mut remaining_debt = debt_amount;
@@ -170,7 +178,7 @@ mod tests {
             vec!["Alice", "Bob", "Charlie"],
         )];
 
-        let balances = balances_from_expenses(&expenses, "USD".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "USD".to_string());
 
         assert_eq!(balances.len(), 2);
 
@@ -275,7 +283,7 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         // Alice paid 90, owes 30 (her share) -> net = -60 (creditor)
         // Bob paid 5, owes 30 (from group dinner) + 5 (coffee) = 35 -> net = 30 (debtor)
@@ -362,16 +370,13 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         // Alice: paid 400, owes (100 + 30 + 20 + 20) = 170 -> net = -230 (creditor)
         // Bob: paid 120, owes (100 + 30 + 20 + 20) = 170 -> net = 50 (debtor)
         // Charlie: paid 80, owes (100 + 30 + 20 + 20) = 170 -> net = 90 (debtor)
         // Diana: paid 60, owes (100 + 30 + 20 + 0) = 150 -> net = 90 (debtor)
         
-
-        println!("Balances: {:?}", balances);
-
         // Total debts: 50 + 90 + 90 = 230 (matches Alice's credit)
         assert!(balances.len() == 3);
         
@@ -438,7 +443,7 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "USD".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "USD".to_string());
 
         // Total expenses: 500 + 325 + 100 + 75 + 50 = 1050
         // Each person owes: 1050 / 5 = 210

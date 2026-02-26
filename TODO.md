@@ -12,7 +12,7 @@
 - [x] Expense deletion
 - [ ] Split deletion
 - [x] Save joined splits in localStorage
-- [ ] Show balance per participant
+- [x] Show balance per participant
 - [ ] Add more split methods
     - [ ] Split by amount
     - [ ] Split by percentage
@@ -20,4 +20,5 @@
 - [x] Select currency instead of type
 - [x] Show original amount and currency
 - [ ] Better architecture
-- [ ] Remove split from localStorage
+- [x] Remove split from localStorage
+- [ ] Optimize loading via templates or iframes
