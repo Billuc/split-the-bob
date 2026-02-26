@@ -9,7 +9,7 @@ function saveSplit() {
     const idsString = localStorage.getItem(SPLITS_KEY) ?? "";
     const ids = new Set(idsString.split(SEPARATOR).filter(s => s != ""));
     ids.add(splitId);
-    let newIds = Array.from(ids).join(SEPARATOR)
+    let newIds = Array.from(ids).join(SEPARATOR);
     localStorage.setItem(SPLITS_KEY, newIds);
 }
 
@@ -33,6 +33,16 @@ async function loadSplits() {
                 joinedSplitsDiv.append(details);
             })
     }
+}
+
+function removeSplit(id) {
+    const idsString = localStorage.getItem(SPLITS_KEY) ?? "";
+    const ids = new Set(idsString.split(SEPARATOR).filter(s => s != ""));
+    ids.delete(id);
+    let newIds = Array.from(ids).join(SEPARATOR);
+    localStorage.setItem(SPLITS_KEY, newIds);
+
+    document.getElementById(id)?.remove();
 }
 
 if (window.location.pathname === "/splits") {

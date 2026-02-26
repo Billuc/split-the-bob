@@ -1,12 +1,26 @@
+{% macro remove(id) %}
+<button onclick="removeSplit('{{ id }}')">
+    Retirer
+</button>
+{% endmacro %}
+
 
 {% block success %}
-<div id="{{ split.id }}">
-    <a href="./splits?split_id={{ split.id }}#main" target="htmz">{{ split.description }}</a>
-</div>
+<table>
+<tr id="{{ split.id }}">
+    <td>
+        <a href="./splits?split_id={{ split.id }}#main" target="htmz">{{ split.description }}</a>
+    </td>
+    <td>{{ remove(split.id) }}</td>
+</tr>
+</table>
 {% endblock %}
 
 {% block failure %}
-<div id="{{ split_id }}">
-    <p class="error">Could not find a split with ID {{ split_id }}</p>
-</div>
+<table>
+<tr id="{{ split_id }}">
+    <td class="error">Could not find a split with ID {{ split_id }}</td>
+    <td>{{ remove(split_id) }}</td>
+</tr>
+</table>
 {% endblock %}

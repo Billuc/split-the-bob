@@ -10,19 +10,22 @@
   </head>
   <body>
     <header>
-      <h1><a href="./">Reparti'Potes</a></h1>
+      <h1>
+        <a href="./">
+          <img src="./favicon.png" alt="Logo" />
+          Reparti'Potes
+        </a>
+      </h1>
     </header>
 
     <main id="main">
       {% if errors is defined %}
-        <div id="errors">
-          {% for error in errors %}
-          <p class="error">{{ error }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      {% block content %} {% endblock %}
+      <div id="errors">
+        {% for error in errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %} {% block content %} {% endblock %}
     </main>
     <script src="js/split-storage.js"></script>
   </body>
