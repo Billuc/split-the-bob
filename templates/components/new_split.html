@@ -1,5 +1,3 @@
-{% import "components/currency_select.html" as select %}
-
 <button
   style="margin-bottom: 1rem"
   id="new-split-button"
@@ -16,8 +14,8 @@
       <button type="button" id="add-participant">Ajouter un participant</button>
     </label>
     <label>
-      Devise par défaut:
-      {{ select::currency_select("default_currency", "EUR") }}
+      <script src="./js/currency-select.js"></script>
+      Devise par défaut: <currency-select data-name="default_currency" data-selected="EUR"></currency-select>
     </label>
     <input type="submit" value="Créer" />
   </form>

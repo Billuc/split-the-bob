@@ -1,7 +1,7 @@
 use serde_json::{Map, value::Value};
 use std::{env, fmt::Display, ops::Deref};
 
-#[derive(Clone)]
+#[derive(Clone, serde::Serialize)]
 pub struct Currency {
     pub code: String,
     pub name: String,

@@ -1,3 +1,7 @@
+/**
+ * @param {HTMLIFrameElement} frame 
+ * @returns 
+ */
 function htmz(frame) {
   if (frame.contentWindow.location.hash === "") {
     return;

@@ -4,7 +4,6 @@ use std::collections::HashMap;
 use std::time::SystemTime;
 
 use crate::balances::balance::{Balance, balances_from_expenses};
-use crate::currencies::currency::{CURRENCIES, Currency};
 use crate::db::DB;
 use crate::error::Error;
 use crate::expenses::expense::Expense;
@@ -20,7 +19,6 @@ struct SplitView<'a> {
     expenses: Vec<Expense>,
     balances: Vec<Balance>,
     individual_balances: HashMap<String, f32>,
-    currencies: Vec<Currency>,
 }
 
 pub async fn get_split_view(db: &DB, id: String, errors: Vec<&str>) -> Result<Html<String>, Error> {
@@ -34,7 +32,6 @@ pub async fn get_split_view(db: &DB, id: String, errors: Vec<&str>) -> Result<Ht
         expenses,
         balances,
         individual_balances,
-        currencies: (*CURRENCIES).clone(),
     };
     let view = template.render()?;
     Ok(view.into())
