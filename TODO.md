@@ -11,14 +11,20 @@
 - [x] Better error handling in split_service (see expense_service)
 - [x] Expense deletion
 - [ ] Split deletion
+    - Reference counting ?
+    - ~~Manual deletion ? Would be available to everyone :(~~
+    - Expiration after X days after last operation ?
 - [x] Save joined splits in localStorage
 - [x] Show balance per participant
 - [ ] Add more split methods
     - [ ] Split by amount
     - [ ] Split by percentage
-- [ ] Review balance algorithm to limit number of required operations
+- [x] Review balance algorithm to limit number of required operations
+    - cf. <https://medium.com/@howoftech/how-does-the-splitwise-algorithm-work-dc1de5eaa371>
+    - Current algorithm is the same as the first proposed
+    - Current algorithm isn't optimal transaction-wise but is time-efficient
 - [x] Select currency instead of type
 - [x] Show original amount and currency
 - [ ] Better architecture
 - [x] Remove split from localStorage
-- [ ] Optimize loading via templates or iframes
+- [x] Optimize loading via templates or iframes
