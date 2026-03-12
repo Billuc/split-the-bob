@@ -1,6 +1,11 @@
 {% extends "base.html" %} 
 
 {% block content %} 
+<p id="homepage-message">
+  Reparti'Potes vous permet de répartir vos dépenses simplement entre amis.<br/>
+  Que ce soit pour un voyage, une colocation ou un cadeau commun, Reparti'Potes vous aide à gérer vos dépenses et à savoir qui doit combien à qui.
+</p>
+
 {% include "components/new_split.html" %}
 <form action="./splits#main" target="htmz">
   <label> Code du reparti': <input type="text" name="split_id" /> </label>

@@ -208,6 +208,9 @@ button.ghost {
 #joined-splits {
   margin-inline: auto;
 }
+#joined-splits td {
+  padding-inline: 0.5rem;
+}
 
 h1 img {
   vertical-align: middle;
@@ -223,4 +226,16 @@ h1 img {
 }
 .individual_balance.negative {
   color: red;
+}
+
+#homepage-message {
+  max-width: 600px;
+  margin: 0 auto 1rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: small;
+  color: color-mix(in srgb, var(--text-2) 70%, transparent 30%);
 }
