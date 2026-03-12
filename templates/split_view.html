@@ -18,9 +18,11 @@
 
             {% let balance_ref = individual_balances.get(*participant).unwrap_or(&0.0) %}
             {% let balance_for_p = *balance_ref * -1.0 %}
+            {% if balance_for_p != 0.0 %}
             <span class="individual_balance {% if balance_for_p > 0.0 %}positive{% else %}negative{% endif %}">
               ({{ balance_for_p | fmt("{:.2}") }}{{ split.default_currency }})
             </span>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
@@ -34,6 +36,7 @@
         {% for expense in expenses %} {% include "components/expense.html" %} {% endfor %}
       </table>
       <script src="./js/expense-date.js"></script>
+      <script src="./js/expense-split-method.js"></script>
     </div>
 
     <div id="balances">

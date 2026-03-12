@@ -6,6 +6,7 @@
 {% decl payedBy %}
 {% decl payedFor %}
 {% decl timestamp %}
+{% decl isAmountSplit %}
 
 {% if expense is defined %}
   {% let buttonText = "Modifier" %}
@@ -15,6 +16,7 @@
   {% let currency = expense.original_currency %}
   {% let payedBy = expense.payed_by %}
   {% let payedFor = expense.payed_for %}
+  {% let isAmountSplit = expense.split_method.is_amounts() %}
   {% match expense.expense_date.duration_since(SystemTime::UNIX_EPOCH) %}
     {% when Ok with (duration) %}
       {% let timestamp = duration.as_secs_f32() %}
@@ -30,6 +32,7 @@
   {% let payedBy = "" %}
   {% let payedFor = split.participants %}
   {% let timestamp = 0.0 %}
+  {% let isAmountSplit = false %}
 {% endif %}
 
 <button id="{{ expenseId }}-button"
@@ -58,6 +61,7 @@
       <input 
         type="number"
         name="amount"
+        step="0.01"
         {% if expense is defined %}value="{{ expense.original_amount }}"{% endif %}
         placeholder="Montant" 
         required
@@ -69,23 +73,51 @@
     </label>
     <label>
       Payé par:
-      <select name="payed_by" required>
+      <select name="payed_by" class="expense-payer-select" required>
         {% for participant in split.participants %}
           {% let selected = participant == payedBy %}
           <option value="{{ participant }}" {% if selected %}selected="selected"{% endif %}>{{ participant }}</option>
         {% endfor %}
       </select>
     </label>
+    <label>
+      Méthode de répartition:
+      <select name="split_method" class="expense-split-method" required>
+        <option value="Evenly" {% if !isAmountSplit %}selected="selected"{% endif %}>Equitable</option>
+        <option value="Amounts" {% if isAmountSplit %}selected="selected"{% endif %}>Par montant</option>
+      </select>
+    </label>
     <b>
       Reparti entre:
       {% for participant in split.participants %}
         {% let checked = payedFor.contains(participant) %}
-        <label class="checkbox-label">
+        <label class="checkbox-label participant-amount-row" data-participant="{{ participant }}">
           <input type="checkbox"
                   name="payed_for[]"
+                  class="expense-participant-checkbox"
                   value="{{ participant }}"
                   {% if checked %}checked{% endif %} />
-          {{ participant }}
+          <span>{{ participant }}</span>
+          <input
+            type="hidden"
+            name="amounts_person[]"
+            value="{{ participant }}"
+            class="amount-person-input"
+            {% if !isAmountSplit || !checked %}disabled{% endif %}
+          />
+          <input
+            type="number"
+            name="amounts_value[]"
+            class="participant-amount-input"
+            min="0"
+            step="0.01"
+            {% if expense is defined && isAmountSplit %}
+              value="{{ expense.split_method.amount_for_or_zero(participant) }}"
+            {% else %}
+              value="0"
+            {% endif %}
+            {% if !isAmountSplit || !checked %}disabled{% endif %}
+          />
         </label>
       {% endfor %}
     </b>

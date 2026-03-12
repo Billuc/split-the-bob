@@ -4,6 +4,7 @@ use axum::{
     routing::{get, post},
 };
 use axum_extra::extract::Form;
+use std::collections::{HashMap, HashSet};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use crate::error::Error;
@@ -28,6 +29,11 @@ pub struct AddExpenseForm {
     payed_by: String,
     #[serde(rename = "payed_for[]")]
     payed_for: Vec<String>,
+    split_method: String,
+    #[serde(rename = "amounts_person[]", default)]
+    amounts_person: Vec<String>,
+    #[serde(rename = "amounts_value[]", default)]
+    amounts_value: Vec<f32>,
     expense_date: f32,
 }
 
@@ -58,6 +64,10 @@ async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Err
     let expense_currency = currency::try_get_currency(&form.currency)?;
     let default_currency_amount =
         currency::convert(form.amount, expense_currency, default_currency).await?;
+    let split_method =
+        build_split_method(form.amount, &form.payed_for, &form.split_method, &form.amounts_person, &form.amounts_value)?;
+    let split_method =
+        convert_split_method_amounts(split_method, expense_currency, default_currency).await?;
 
     let new_expense = Expense {
         id: 0, // Will be auto-assigned by database
@@ -70,7 +80,7 @@ async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Err
         payed_by: form.payed_by.clone(),
         payed_for: form.payed_for.clone(),
         expense_date: system_time_from_timestamp(form.expense_date),
-        split_method: SplitMethod::Evenly,
+        split_method,
     };
 
     ExpenseRepo::create(&state.db, new_expense).await
@@ -86,6 +96,11 @@ pub struct UpdateExpenseForm {
     payed_by: String,
     #[serde(rename = "payed_for[]")]
     payed_for: Vec<String>,
+    split_method: String,
+    #[serde(rename = "amounts_person[]", default)]
+    amounts_person: Vec<String>,
+    #[serde(rename = "amounts_value[]", default)]
+    amounts_value: Vec<f32>,
     expense_date: f32,
 }
 
@@ -116,6 +131,10 @@ async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(
     let expense_currency = currency::try_get_currency(&form.currency)?;
     let default_currency_amount =
         currency::convert(form.amount, expense_currency, default_currency).await?;
+    let split_method =
+        build_split_method(form.amount, &form.payed_for, &form.split_method, &form.amounts_person, &form.amounts_value)?;
+    let split_method =
+        convert_split_method_amounts(split_method, expense_currency, default_currency).await?;
 
     let updated_expense = Expense {
         id: form.id,
@@ -128,7 +147,7 @@ async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(
         payed_by: form.payed_by.clone(),
         payed_for: form.payed_for.clone(),
         expense_date: system_time_from_timestamp(form.expense_date),
-        split_method: SplitMethod::Evenly,
+        split_method,
     };
 
     ExpenseRepo::update(&state.db, updated_expense).await
@@ -169,4 +188,100 @@ fn system_time_from_timestamp(timestamp: f32) -> SystemTime {
         return UNIX_EPOCH;
     }
     UNIX_EPOCH + Duration::from_secs_f32(timestamp)
+}
+
+fn build_split_method(
+    expense_amount: f32,
+    payed_for: &[String],
+    split_method: &str,
+    amounts_person: &[String],
+    amounts_value: &[f32],
+) -> Result<SplitMethod, Error> {
+    match split_method {
+        "Evenly" => Ok(SplitMethod::Evenly),
+        "Amounts" => {
+            let amounts = build_amounts_map(amounts_person, amounts_value)?;
+            validate_amount_split(expense_amount, payed_for, &amounts)?;
+            Ok(SplitMethod::Amounts { amounts })
+        }
+        _ => Err(Error::Validation(
+            "Méthode de répartition inconnue".to_string(),
+        )),
+    }
+}
+
+fn build_amounts_map(
+    amounts_person: &[String],
+    amounts_value: &[f32],
+) -> Result<HashMap<String, f32>, Error> {
+    if amounts_person.len() != amounts_value.len() {
+        return Err(Error::Validation(
+            "Les montants par participant sont invalides".to_string(),
+        ));
+    }
+
+    let mut amounts: HashMap<String, f32> = HashMap::new();
+    for (person, value) in amounts_person.iter().zip(amounts_value.iter()) {
+        if person.is_empty() {
+            continue;
+        }
+
+        if *value < 0.0 {
+            return Err(Error::Validation(
+                "Les montants ne peuvent pas être négatifs".to_string(),
+            ));
+        }
+
+        amounts.insert(person.clone(), *value);
+    }
+
+    Ok(amounts)
+}
+
+fn validate_amount_split(
+    expense_amount: f32,
+    payed_for: &[String],
+    amounts: &HashMap<String, f32>,
+) -> Result<(), Error> {
+    let allowed_people: HashSet<&String> = payed_for.iter().collect();
+    for person in amounts.keys() {
+        if !allowed_people.contains(person) {
+            return Err(Error::Validation(format!(
+                "{} n'est pas dans la liste des participants concernés",
+                person
+            )));
+        }
+    }
+
+    let total = amounts.values().sum::<f32>();
+    if (total - expense_amount).abs() > 0.01 {
+        return Err(Error::Validation(
+            "La somme des montants doit être égale au montant de la dépense".to_string(),
+        ));
+    }
+
+    Ok(())
+}
+
+async fn convert_split_method_amounts(
+    split_method: SplitMethod,
+    expense_currency: &currency::Currency,
+    default_currency: &currency::Currency,
+) -> Result<SplitMethod, Error> {
+    match split_method {
+        SplitMethod::Evenly => Ok(SplitMethod::Evenly),
+        SplitMethod::Amounts { amounts } => {
+            let mut converted_amounts: HashMap<String, f32> = HashMap::new();
+
+            for (participant, participant_amount) in amounts {
+                let converted_amount =
+                    currency::convert(participant_amount, expense_currency, default_currency).await?;
+                converted_amounts.insert(participant, converted_amount);
+            }
+
+            Ok(SplitMethod::Amounts {
+                amounts: converted_amounts,
+            })
+        }
+    }
 }

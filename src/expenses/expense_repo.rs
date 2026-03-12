@@ -1,5 +1,6 @@
 use sqlx::{FromRow, types::Json};
 use std::time::{Duration, UNIX_EPOCH};
+use std::collections::HashMap;
 
 use crate::db::DB;
 use crate::error::Error;
@@ -73,10 +74,10 @@ impl From<SplitMethod> for SplitMethodDTO {
                 method: "Evenly".to_string(),
                 details: "".to_string(),
             },
-            // SplitMethod::Amounts { amounts } => SplitMethodDTO {
-            //     method: "Amounts".to_string(),
-            //     details: serde_json::to_string(&amounts).unwrap(),
-            // },
+            SplitMethod::Amounts { amounts } => SplitMethodDTO {
+                method: "Amounts".to_string(),
+                details: serde_json::to_string(&amounts).unwrap_or("{}".to_string()),
+            },
         }
     }
 }
@@ -85,9 +86,10 @@ impl Into<SplitMethod> for SplitMethodDTO {
     fn into(self) -> SplitMethod {
         match self.method.as_str() {
             "Evenly" => SplitMethod::Evenly,
-            // "Amounts" => SplitMethod::Amounts {
-            //     amounts: serde_json::from_str(&self.details).unwrap(),
-            // },
+            "Amounts" => SplitMethod::Amounts {
+                amounts: serde_json::from_str::<HashMap<String, f32>>(&self.details)
+                    .unwrap_or_default(),
+            },
             _ => {
                 println!("Unknown split method");
                 SplitMethod::Evenly

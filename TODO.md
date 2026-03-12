@@ -19,6 +19,7 @@
 - [ ] Add more split methods
     - [ ] Split by amount
     - [ ] Split by percentage
+    - [ ] Split by parts
 - [x] Review balance algorithm to limit number of required operations
     - cf. <https://medium.com/@howoftech/how-does-the-splitwise-algorithm-work-dc1de5eaa371>
     - Current algorithm is the same as the first proposed

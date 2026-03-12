@@ -48,13 +48,16 @@ fn get_credits_and_debts(balance_per_participant: &HashMap<String, f32>) -> (Vec
     (debts, credits)
 }
 
-fn split_expense(expense: &Expense) -> impl Iterator<Item = (String, f32)> {
-    match expense.split_method {
+fn split_expense(expense: &Expense) -> Vec<(String, f32)> {
+    match &expense.split_method {
         expense::SplitMethod::Evenly => split_evenly(
             expense.amount,
             expense.payed_by.clone(),
             expense.payed_for.clone(),
         ),
+        expense::SplitMethod::Amounts { amounts } => {
+            split_by_amount(expense.amount, expense.payed_by.clone(), amounts)
+        }
     }
 }
 
@@ -62,12 +65,24 @@ fn split_evenly(
     amount: f32,
     payer: String,
     participants: Vec<String>,
-) -> impl Iterator<Item = (String, f32)> {
+) -> Vec<(String, f32)> {
     let amount_per_person = amount / participants.len() as f32;
 
     participants.into_iter().map(move |p| {
         (p.clone(), amount_per_person)
-    }).chain(vec![(payer.clone(), -amount)])
+    }).chain(vec![(payer.clone(), -amount)]).collect()
+}
+
+fn split_by_amount(
+    amount: f32,
+    payer: String,
+    amounts: &HashMap<String, f32>,
+) -> Vec<(String, f32)> {
+    amounts
+        .iter()
+        .map(|(participant, participant_amount)| (participant.clone(), *participant_amount))
+        .chain(vec![(payer, -amount)])
+        .collect()
 }
 
 fn calculate_balances(

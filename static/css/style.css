@@ -52,8 +52,19 @@ label {
 label.checkbox-label {
   margin: 0.25rem;
   font-weight: normal;
-  width: fit-content;
   cursor: pointer;
+}
+
+label.participant-amount-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  font-weight: normal;
+}
+
+label.participant-amount-row .participant-amount-input {
+  width: 7rem;
 }
 
 input[type="submit"], button:not(:has(selectedcontent)), .link-action {

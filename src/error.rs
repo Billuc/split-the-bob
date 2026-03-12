@@ -12,6 +12,7 @@ pub enum Error {
     MigrateError(sqlx::migrate::MigrateError),
     TemplateError(askama::Error),
     CurrencyError(CurrencyError),
+    Validation(String),
     Infallible,
 }
 
@@ -52,6 +53,7 @@ impl Display for Error {
             Error::MigrateError(err) => write!(f, "Migration error: {}", err),
             Error::TemplateError(err) => write!(f, "Template rendering error: {}", err),
             Error::CurrencyError(err) => write!(f, "Currency error: {}", err),
+            Error::Validation(message) => write!(f, "{}", message),
             Error::Infallible => write!(f, "This should never happen !"),
         }
     }
@@ -75,6 +77,10 @@ impl IntoResponse for Error {
             Error::CurrencyError(err) => {
                 eprintln!("Currency error: {:?}", err);
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error").into_response()
+            }
+            Error::Validation(message) => {
+                eprintln!("Validation error: {}", message);
+                (StatusCode::BAD_REQUEST, message).into_response()
             }
             Error::Infallible => {
                 eprintln!("This should never happen");
