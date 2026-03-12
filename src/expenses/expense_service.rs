@@ -4,7 +4,7 @@ use axum::{
     routing::{get, post},
 };
 use axum_extra::extract::Form;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use crate::error::Error;
@@ -30,8 +30,6 @@ pub struct AddExpenseForm {
     #[serde(rename = "payed_for[]")]
     payed_for: Vec<String>,
     split_method: String,
-    #[serde(rename = "amounts_person[]", default)]
-    amounts_person: Vec<String>,
     #[serde(rename = "amounts_value[]", default)]
     amounts_value: Vec<f32>,
     expense_date: f32,
@@ -64,8 +62,12 @@ async fn try_add_expense(state: &State, form: &AddExpenseForm) -> Result<(), Err
     let expense_currency = currency::try_get_currency(&form.currency)?;
     let default_currency_amount =
         currency::convert(form.amount, expense_currency, default_currency).await?;
-    let split_method =
-        build_split_method(form.amount, &form.payed_for, &form.split_method, &form.amounts_person, &form.amounts_value)?;
+    let split_method = build_split_method(
+        form.amount,
+        &form.payed_for,
+        &form.split_method,
+        &form.amounts_value,
+    )?;
     let split_method =
         convert_split_method_amounts(split_method, expense_currency, default_currency).await?;
 
@@ -97,8 +99,6 @@ pub struct UpdateExpenseForm {
     #[serde(rename = "payed_for[]")]
     payed_for: Vec<String>,
     split_method: String,
-    #[serde(rename = "amounts_person[]", default)]
-    amounts_person: Vec<String>,
     #[serde(rename = "amounts_value[]", default)]
     amounts_value: Vec<f32>,
     expense_date: f32,
@@ -131,8 +131,12 @@ async fn try_update_expense(state: &State, form: &UpdateExpenseForm) -> Result<(
     let expense_currency = currency::try_get_currency(&form.currency)?;
     let default_currency_amount =
         currency::convert(form.amount, expense_currency, default_currency).await?;
-    let split_method =
-        build_split_method(form.amount, &form.payed_for, &form.split_method, &form.amounts_person, &form.amounts_value)?;
+    let split_method = build_split_method(
+        form.amount,
+        &form.payed_for,
+        &form.split_method,
+        &form.amounts_value,
+    )?;
     let split_method =
         convert_split_method_amounts(split_method, expense_currency, default_currency).await?;
 
@@ -194,14 +198,13 @@ fn build_split_method(
     expense_amount: f32,
     payed_for: &[String],
     split_method: &str,
-    amounts_person: &[String],
     amounts_value: &[f32],
 ) -> Result<SplitMethod, Error> {
     match split_method {
         "Evenly" => Ok(SplitMethod::Evenly),
         "Amounts" => {
-            let amounts = build_amounts_map(amounts_person, amounts_value)?;
-            validate_amount_split(expense_amount, payed_for, &amounts)?;
+            let amounts = build_amounts_map(payed_for, amounts_value)?;
+            validate_amounts(expense_amount, &amounts)?;
             Ok(SplitMethod::Amounts { amounts })
         }
         _ => Err(Error::Validation(
@@ -211,17 +214,17 @@ fn build_split_method(
 }
 
 fn build_amounts_map(
-    amounts_person: &[String],
+    payed_for: &[String],
     amounts_value: &[f32],
 ) -> Result<HashMap<String, f32>, Error> {
-    if amounts_person.len() != amounts_value.len() {
+    if payed_for.len() != amounts_value.len() {
         return Err(Error::Validation(
             "Les montants par participant sont invalides".to_string(),
         ));
     }
 
     let mut amounts: HashMap<String, f32> = HashMap::new();
-    for (person, value) in amounts_person.iter().zip(amounts_value.iter()) {
+    for (person, value) in payed_for.iter().zip(amounts_value.iter()) {
         if person.is_empty() {
             continue;
         }
@@ -238,21 +241,7 @@ fn build_amounts_map(
     Ok(amounts)
 }
 
-fn validate_amount_split(
-    expense_amount: f32,
-    payed_for: &[String],
-    amounts: &HashMap<String, f32>,
-) -> Result<(), Error> {
-    let allowed_people: HashSet<&String> = payed_for.iter().collect();
-    for person in amounts.keys() {
-        if !allowed_people.contains(person) {
-            return Err(Error::Validation(format!(
-                "{} n'est pas dans la liste des participants concernés",
-                person
-            )));
-        }
-    }
-
+fn validate_amounts(expense_amount: f32, amounts: &HashMap<String, f32>) -> Result<(), Error> {
     let total = amounts.values().sum::<f32>();
     if (total - expense_amount).abs() > 0.01 {
         return Err(Error::Validation(
@@ -275,7 +264,8 @@ async fn convert_split_method_amounts(
 
             for (participant, participant_amount) in amounts {
                 let converted_amount =
-                    currency::convert(participant_amount, expense_currency, default_currency).await?;
+                    currency::convert(participant_amount, expense_currency, default_currency)
+                        .await?;
                 converted_amounts.insert(participant, converted_amount);
             }
 

@@ -171,7 +171,7 @@ mod tests {
             vec!["Alice", "Bob"],
         )];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         assert_eq!(balances.len(), 1);
         let balance = &balances[0];
@@ -230,7 +230,7 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         assert_eq!(balances.len(), 1);
         let balance = &balances[0];
@@ -262,7 +262,7 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         // Alice paid 100, owes 50 (her share of 100) + 30 (her share of 60) = 80 total owed to group
         // Bob paid 60, owes 50 (his share of 100) + 30 (his share of 60) = 80 total owed to group
@@ -337,7 +337,7 @@ mod tests {
             ),
         ];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         // Alice paid 100, owes 100 -> net = 0
         // Bob paid 100, owes 100 -> net = 0
@@ -500,7 +500,7 @@ mod tests {
     #[test]
     fn test_edge_case_empty_expenses() {
         let expenses: Vec<Expense> = vec![];
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
         assert_eq!(balances.len(), 0);
     }
 
@@ -516,7 +516,7 @@ mod tests {
             vec!["Alice"],
         )];
 
-        let balances = balances_from_expenses(&expenses, "EUR".to_string());
+        let (balances, _) = balances_from_expenses(&expenses, "EUR".to_string());
 
         // Alice pays for herself, no debt
         assert_eq!(balances.len(), 0);

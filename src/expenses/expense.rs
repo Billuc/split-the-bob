@@ -25,11 +25,17 @@ impl SplitMethod {
     pub fn is_amounts(&self) -> bool {
         matches!(self, SplitMethod::Amounts { .. })
     }
+}
 
-    pub fn amount_for_or_zero(&self, participant: &str) -> f32 {
-        match self {
-            SplitMethod::Evenly => 0.0,
-            SplitMethod::Amounts { amounts } => *amounts.get(participant).unwrap_or(&0.0),
+impl Expense {
+    pub fn amount_for(&self, participant: &str) -> f32 {
+        if !self.payed_for.contains(&participant.to_string()) {
+            return 0.0;
+        }
+
+        match self.split_method {
+            SplitMethod::Evenly => self.amount / self.payed_for.len() as f32,
+            SplitMethod::Amounts { ref amounts } => *amounts.get(participant).unwrap_or(&0.0),
         }
     }
 }
