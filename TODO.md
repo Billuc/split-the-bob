@@ -17,7 +17,7 @@
 - [x] Save joined splits in localStorage
 - [x] Show balance per participant
 - [ ] Add more split methods
-    - [ ] Split by amount
+    - [x] Split by amount
     - [ ] Split by percentage
     - [ ] Split by parts
 - [x] Review balance algorithm to limit number of required operations
